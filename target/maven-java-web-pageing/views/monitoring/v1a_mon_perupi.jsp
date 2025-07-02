@@ -1,6 +1,66 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <style>
+   /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL DAFTAR */
+    #tablemon_upi {
+        table-layout: auto; /* Sama seperti #dataModal table */
+        font-size: 0.75rem; /* Sama dengan modal-body */
+        width: 100%;
+    }
+
+    #tablemon_upi th,
+    #tablemon_upi td {
+        font-size: 0.7rem;      /* Sama seperti table detail */
+        padding: 4px 6px;       /* Sama seperti table detail */
+        white-space: nowrap;    /* Hindari wrap */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #tablemon_upi th.sorting::after,
+    #tablemon_upi th.sorting_asc::after,
+    #tablemon_upi th.sorting_desc::after {
+        display: none !important;
+    }
+
+    /* Tambahan jika mau batas tinggi + scroll seperti modal */
+    #tablemon_upi_wrapper .dataTables_scrollBody {
+        max-height: 65vh;       /* Sesuaikan tinggi maksimal seperti modal */
+        overflow-y: auto;
+    }
+
+    /* CSS MODAL SHOW TABLE MONITORING DAFTAR */
+    #dataModal .modal-body {
+        font-size: 0.75rem; /* Ukuran teks diperkecil */
+    }
+
+    #dataModal table th,
+    #dataModal table td {
+        font-size: 0.7rem;   /* Ukuran teks header dan isi tabel */
+        padding: 4px 6px;    /* Padding dikurangi agar tidak terlalu lebar */
+        white-space: nowrap; /* Hindari pemisahan baris */
+    }
+
+    #dataModal table {
+        table-layout: auto; /* Gunakan auto agar kolom menyesuaikan konten */
+    }
+
+    #dataModal .datatable-container {
+        max-height: 65vh;    /* Batasi tinggi agar bisa scroll */
+        overflow-y: auto;
+    }
+
+    /* Pastikan form-container relatif */
+    .form-monitoring {
+        position: relative;
+    }
+
+    .datatable-container {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+
     /* Buat spinner tetap di tengah form tapi transparan */
     .loading-overlay {
         position: absolute;

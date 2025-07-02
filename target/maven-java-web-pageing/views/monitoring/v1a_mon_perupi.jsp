@@ -103,6 +103,10 @@
           <button id="downloadMonDftExcelBtnAll" class="btn btn-primary btn-export">
             Download Excel
           </button>
+
+          <button id="btnExportAllExcel" class="btn btn-success">
+            Download Excel Semua
+        </button>
         </div>
 
         <!-- <div class="row g-3 mb-3">
@@ -559,15 +563,15 @@
                 }
             });
         });
-
+       
+        const contextPath = '<%= request.getContextPath() %>';
         $('#downloadMonDftExcelBtnAll').on('click', async function () {
             const btn = $(this);
             btn.prop('disabled', true).text('Mengunduh...');
 
             try {
-                // const url = window.location.origin + '/mon-rekon-bankvsperupi';
-                const url = window.location.origin + '<%= request.getContextPath() %>/mon-rekon-bankvsperupi';
-
+                const url = window.location.origin + contextPath + '/mon-rekon-bankvsperupi';
+                console.log('info url ' + url);
 
                 const params = new URLSearchParams();
                 params.append('act', 'detailData');
@@ -585,10 +589,27 @@
                     body: params.toString()
                 });
 
-                if (!response.ok) throw new Error('Gagal mengambil data dari server');
+                // Cek response dari server
+                if (!response.ok) {
+                        const text = await response.text();
+                        console.error('Gagal fetch, response bukan OK:\n', text);
+                        throw new Error(`(${response.status}) ${response.statusText}\n${text}`);
+                    }
+
+
+                // Pastikan konten JSON
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    const errText = await response.text();
+                    throw new Error('Server mengembalikan format tidak valid:\n' + errText);
+                }
 
                 const json = await response.json();
                 const allData = json.data || [];
+
+                if (allData.length === 0) {
+                    throw new Error('Data kosong, tidak dapat diekspor.');
+                }
 
                 const headers = {
                     'NO': '',
@@ -625,8 +646,7 @@
                 const formattedData = allData.map((item, idx) => {
                     const row = {};
                     Object.keys(headers).forEach((key) => {
-                        const val = item[key];
-                        row[key] = val !== undefined && val !== null ? val : '';
+                        row[key] = item[key] !== undefined && item[key] !== null ? item[key] : '';
                     });
                     row['NO'] = idx + 1;
                     return row;
@@ -636,153 +656,35 @@
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, "REKON_DETAIL_MIV");
 
-                const filename = 'REKON_DETAIL_MIV_BANK_VS_BANK_'+detailFilterParams.vbln_usulan+'.xlsx';
+                const filename = `REKON_DETAIL_MIV_BANK_VS_BANK_${detailFilterParams.vbln_usulan}.xlsx`;
                 XLSX.writeFile(workbook, filename);
 
             } catch (error) {
-                alert('Gagal ekspor data: ' + error.message);
-                console.error(error);
+                alert('Gagal ekspor data:\n' + error.message);
+                console.error('[Export Error]', error);
             } finally {
                 btn.prop('disabled', false).text('Download Excel');
             }
         });
 
-        
-        // ---------------------------------------------------------------------------------------------
-        // export exel all record all page
-        // ---------------------------------------------------------------------------------------------
-        // $('#downloadExcelBtnAll').on('click', async function () {
-        //     const btn = $(this);
+        const contextPath2 = '<%= request.getContextPath() %>';
 
-        //     const vtahun    = detailFilterParams.vtahun;
-        //     const vdata     = detailFilterParams.vdata;
-        //     const voption   = detailFilterParams.voption;
-        //     const vidoption = detailFilterParams.vidoption;
+        $('#btnExportAllExcel').on('click', function () {
+            const form = $('<form>', {
+                method: 'POST',
+                action: contextPath2 + '/mon-rekon-bankvsperupi'
+            });
 
-        //     if (!vtahun || !vdata || !voption ) {
-        //         alert('Silakan pilih Tahun, Jenis, dan Kriteria Data terlebih dahulu!');
-        //         return;
-        //     }
+            // Parameter yang ingin dikirim ke controller
+            form.append($('<input>', { type: 'hidden', name: 'act', value: 'exportExcelAll' }));
+            form.append($('<input>', { type: 'hidden', name: 'vbln_usulan', value: detailFilterParams.vbln_usulan }));
+            form.append($('<input>', { type: 'hidden', name: 'vkd_bank', value: detailFilterParams.vkd_bank }));
+            form.append($('<input>', { type: 'hidden', name: 'vkd_dist', value: detailFilterParams.vkd_dist }));
 
-        //     const info = table.page.info();
-        //     const start = info.start;
-        //     const length = info.length;
-
-        //     btn.prop('disabled', true).text('Memuat...');
-
-        //     try {
-        //         const baseUrl = window.location.origin;
-        //         const url = baseUrl + "<%= request.getContextPath() %>/bpbl";
-
-        //         const params = new URLSearchParams();
-        //         params.append('start', start);
-        //         params.append('length', length);
-        //         params.append('all', 'true');
-        //         params.append('vtahun', vtahun);
-        //         params.append('vdata', vdata);
-        //         params.append('voption', voption);
-        //         params.append('vidoption', vidoption);
-
-        //         const response = await fetch(url, {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/x-www-form-urlencoded',
-        //             },
-        //             body: params.toString()
-        //         });
-
-        //         if (!response.ok) {
-        //             throw new Error('Gagal mengambil data dari server');
-        //         }
-
-        //         const json = await response.json();
-        //         const allData = json.data || [];
-
-        //         const headers = {
-        //             'NO': '',
-        //             // 'TOTAL_COUNT': '',
-        //             'DATA': '',
-        //             'ID_KOLEKTIF': '',
-        //             'IDURUT_BPBL': '',
-        //             'TANGGAL_USULAN': '',
-        //             'KODE_PENGUSUL': '',
-        //             'NAMA_PELANGGAN': '',
-        //             'NIK': '',
-        //             'ALAMAT': '',
-        //             'KD_PROV': '',
-        //             'KD_PROV_USULAN': '',
-        //             'PROVINSI': '',
-        //             'PROVINSI_USULAN': '',
-        //             'KD_KAB': '',
-        //             'KD_KAB_USULAN': '',
-        //             'KABUPATENKOTA': '',
-        //             'KABUPATENKOTA_USULAN': '',
-        //             'KD_KEC': '',
-        //             'KD_KEC_USULAN': '',
-        //             'KECAMATAN': '',
-        //             'KECAMATAN_USULAN': '',
-        //             'KD_KEL': '',
-        //             'KD_KEL_USULAN': '',
-        //             'DESAKELURAHAN': '',
-        //             'DESAKELURAHAN_USULAN': '',
-        //             'UNITUPI': '',
-        //             'NAMA_UNITUPI': '',
-        //             'UNITAP': '',
-        //             'NAMA_UNITAP': '',
-        //             'UNITUP': '',
-        //             'NAMA_UNITUP': '',
-        //             'STATUS_UPLOAD': '',
-        //             'STATUS_DATA': '',
-        //             'USER_ID': '',
-        //             'TGL_UPLOAD': '',
-        //             'NAMA_FILE_UPLOAD': '',
-        //             'PATH_FILE': '',
-        //             'DOKUMEN_UPLOAD': '',
-        //             'PATH_DOKUMEN': '',
-        //             'SURAT_VALDES': '',
-        //             'PRIORITAS': '',
-        //             'VERIFIKASI_DJK': '',
-        //             'SUMBER_DATA': '',
-        //             'KETERANGAN': '',
-        //             'TAHUN': '',
-        //             'TGL_KOREKSI': '',
-        //             'USERID_KOREKSI': '',
-        //             'NAMA_FILE_KOREKSI': '',
-        //             'PATH_FILE_KOREKSI': '',
-        //             'USERID_VERIFIKASI': '',
-        //             'STATUS_VERIFIKASI': '',
-        //             'TGL_VERIFIKASI': '',
-        //             "STATUS_KIRIM": '', 
-        //             'STATUS_CUTOFF': '',
-        //             // 'ROW_NUMBER': ''
-        //         };
-
-        //         const formattedData = allData.length > 0
-        //             ? allData.map((item) => {
-        //                 const row = {};
-        //                 Object.keys(headers).forEach((key) => {
-        //                     const value = item[key];
-        //                     row[key] = (typeof value === 'string') ? value.toUpperCase() : value;
-        //                 });
-        //                 row['NO'] = item.ROW_NUMBER; // Tetap gunakan nomor urut asli
-        //                 return row;
-        //             })
-        //             : [];
-
-        //         const ws = XLSX.utils.json_to_sheet(formattedData, { header: Object.keys(headers) });
-        //         const wb = XLSX.utils.book_new();
-        //         XLSX.utils.book_append_sheet(wb, ws, "BPBL Semua Data");
-
-        //         const filename = "BPBL_" + voption + "_" + vdata + "_" + vtahun + ".xlsx";
-        //         XLSX.writeFile(wb, filename);
-
-        //     } catch (error) {
-        //         alert('Terjadi kesalahan saat mengambil data: ' + error.message);
-        //         console.error('Detail error:', error);
-        //     } finally {
-        //         btn.prop('disabled', false).text('Download Excel Semua Halaman');
-        //     }
-        // });
+            // Form disisipkan ke body dan langsung submit
+            $('body').append(form);
+            form.submit();
+        });
 
     });
 </script>

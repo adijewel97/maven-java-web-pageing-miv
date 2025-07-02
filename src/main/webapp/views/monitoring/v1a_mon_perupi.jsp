@@ -100,24 +100,10 @@
       </div>
       <div class="modal-body" id="modalBody">
         <div class="mb-2">
-          <button id="downloadMonDftExcelBtnAll" class="btn btn-primary btn-export">
+          <button id="btnExportAllExcel" class="btn btn-primary btn-export">
             Download Excel
           </button>
         </div>
-
-        <!-- <div class="row g-3 mb-3">
-          <div class="col-md-3">
-            <label for="xbln_usulan">Bulan Usulan :</label>
-            <input type="text" class="form-control" id="xbln_usulan">
-          </div>
-          <div class="col-md-3">
-            <label for="xkd_dist">Kode Distribusi :</label>
-            <input type="text" class="form-control" id="xkd_dist">
-          </div>
-        </div> -->
-
-        <!-- <div class="datatable-container">
-          <table id="table_mondaf_upi" class="table table-bordered table-striped w-100" width="100%"> -->
         <div class="datatable-container" style="overflow-x: auto;">
          <table id="table_mondaf_upi" class="table table-bordered table-striped w-100" width="100%">
                 <thead>
@@ -363,8 +349,12 @@
                 { targets: 11, className: 'dt-body-right', width: '120px' }                        // SELISIH_RPTAG
             ],
             createdRow: function (row, data, dataIndex) {
-                if (data.URUT == 5) {
-                    $('td', row).css({ 'font-weight': 'bold' });
+               if (data.URUT == 5) {
+                    $('td', row).css({
+                        'font-weight': 'bold',
+                        // 'background-color': 'black',
+                        // 'color': 'white'
+                    });
                 }
 
                 $('td', row).each(function (colIndex) {
@@ -380,21 +370,20 @@
                     const allowedColumns = ['PLN_IDPEL', 'PLN_RPTAG'];
 
                     if (
-                        allowedColumns.includes(columnName) && 
-                        !isNaN(cellValue) && 
-                        Number(cellValue) > 0
+                        allowedColumns.includes(columnName) &&
+                        typeof cellValue === 'string' &&
+                        cellValue.trim() !== '' &&
+                        (data.URUT == 1 || data.URUT == 2 || data.URUT == 3)
                     ) {
                         $(this).css({
                             'cursor': 'pointer',
                             'text-decoration': 'underline',
                             'color': 'blue'
                         }).off('click').on('click', function () {
-                            if (data.URUT == 1 || data.URUT == 2 || data.URUT == 3) {
-                                $('#xbln_usulan').val(data.BLN_USULAN);
-                                $('#xkd_dist').val(data.KD_DIST);
-                            }
+                            $('#xbln_usulan').val(data.BLN_USULAN);
+                            $('#xkd_dist').val(data.KD_DIST);
 
-                            // Perbarui isi detailFilterParams SETIAP klik
+                            // Update filter
                             detailFilterParams = {
                                 vbln_usulan: data.BLN_USULAN,
                                 vkd_bank: data.BANK ? data.BANK.substring(0, 3) : '',
@@ -402,7 +391,6 @@
                             };
 
                             console.log('Updated filter params:', detailFilterParams);
-
                             $('#dataModal').modal('show');
                         });
                     }
@@ -559,92 +547,27 @@
                 }
             });
         });
+       
+        // ----------------------------------------------------------------------------
+        // 1C Export ke exel semua data
+        // ----------------------------------------------------------------------------
+        const contextPath = '<%= request.getContextPath() %>';
+        $('#btnExportAllExcel').on('click', function () {
+            const form = $('<form>', {
+                method: 'POST',
+                action: contextPath + '/mon-rekon-bankvsperupi'
+            });
 
-        $('#downloadMonDftExcelBtnAll').on('click', async function () {
-            const btn = $(this);
-            btn.prop('disabled', true).text('Mengunduh...');
+            // Parameter yang ingin dikirim ke controller
+            form.append($('<input>', { type: 'hidden', name: 'act', value: 'exportExcelAll' }));
+            form.append($('<input>', { type: 'hidden', name: 'vbln_usulan', value: detailFilterParams.vbln_usulan }));
+            form.append($('<input>', { type: 'hidden', name: 'vkd_bank', value: detailFilterParams.vkd_bank }));
+            form.append($('<input>', { type: 'hidden', name: 'vkd_dist', value: detailFilterParams.vkd_dist }));
 
-            try {
-                // const url = window.location.origin + '/mon-rekon-bankvsperupi';
-                const url = window.location.origin + '<%= request.getContextPath() %>/mon-rekon-bankvsperupi';
-
-
-                const params = new URLSearchParams();
-                params.append('act', 'detailData');
-                params.append('vbln_usulan', detailFilterParams.vbln_usulan);
-                params.append('vkd_bank', detailFilterParams.vkd_bank);
-                params.append('vkd_dist', detailFilterParams.vkd_dist);
-                params.append('start', 0);
-                params.append('length', 999999); // ambil semua record
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params.toString()
-                });
-
-                if (!response.ok) throw new Error('Gagal mengambil data dari server');
-
-                const json = await response.json();
-                const allData = json.data || [];
-
-                const headers = {
-                    'NO': '',
-                    'PRODUK': '',
-                    'TGLAPPROVE': '',
-                    'KD_DIST': '',
-                    'VA': '',
-                    'SATKER': '',
-                    'PLN_NOUSULAN': '',
-                    'PLN_IDPEL': '',
-                    'PLN_BLTH': '',
-                    'PLN_LUNAS_H0': '',
-                    'PLN_RPTAG': '',
-                    'PLN_RPBK': '',
-                    'PLN_TGLBAYAR': '',
-                    'PLN_JAMBAYAR': '',
-                    'PLN_USERID': '',
-                    'PLN_KDBANK': '',
-                    'BANK_KETERANGAN': '',
-                    'BANK_NOUSULAN': '',
-                    'BANK_IDPEL': '',
-                    'BANK_BLTH': '',
-                    'BANK_RPTAG': '',
-                    'BANK_RPBK': '',
-                    'BANK_TGLBAYAR': '',
-                    'BANK_JAMBAYAR': '',
-                    'BANK_USERID': '',
-                    'BANK_KDBANK': '',
-                    'SELISIH_RPTAG': '',
-                    'SELISIH_BK': '',
-                    'KETERANGAN': ''
-                };
-
-                const formattedData = allData.map((item, idx) => {
-                    const row = {};
-                    Object.keys(headers).forEach((key) => {
-                        const val = item[key];
-                        row[key] = val !== undefined && val !== null ? val : '';
-                    });
-                    row['NO'] = idx + 1;
-                    return row;
-                });
-
-                const worksheet = XLSX.utils.json_to_sheet(formattedData, { header: Object.keys(headers) });
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "REKON_DETAIL_MIV");
-
-                const filename = 'REKON_DETAIL_MIV_BANK_VS_BANK_'+detailFilterParams.vbln_usulan+'.xlsx';
-                XLSX.writeFile(workbook, filename);
-
-            } catch (error) {
-                alert('Gagal ekspor data: ' + error.message);
-                console.error(error);
-            } finally {
-                btn.prop('disabled', false).text('Download Excel');
-            }
+            // Form disisipkan ke body dan langsung submit
+            $('body').append(form);
+            form.submit();
         });
+
     });
 </script>

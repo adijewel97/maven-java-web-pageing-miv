@@ -8,11 +8,19 @@ import com.google.gson.Gson;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+// Untuk Excel
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+
 
 @WebServlet(name = "MonRekonPerUpiController", urlPatterns = {"/mon-rekon-bankvsperupi"})
 public class MonRekonPerUpiController extends HttpServlet {
@@ -37,18 +45,6 @@ public class MonRekonPerUpiController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // String act = req.getParameter("act");
-        // logger.info("DEBUG: act = " + act);
-
-        // if (ACT_JENIS_LAPORAN.equalsIgnoreCase(act)) {
-        //     handleGetJenisLaporan(req, resp);
-        //     return;
-        // }
-
-        // if (ACT_SUMBER_DATA.equalsIgnoreCase(act)) {
-        //     handleGetsumberdata(req, resp);
-        //     return;
-        // }
         String act = req.getParameter("act");
 
         if ("detailData".equalsIgnoreCase(act)) {
@@ -56,9 +52,15 @@ public class MonRekonPerUpiController extends HttpServlet {
             return;
         }
 
+        if ("exportExcelAll".equalsIgnoreCase(act)) {
+            exportAllMonDft(req, resp);
+            return;
+        }
 
+        // Default handler jika act tidak dikenali
         prosesMonPerUpi(req, resp);
     }
+
 
     private void prosesMonPerUpi(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String vbln_usulan = req.getParameter("vbln_usulan");
@@ -115,6 +117,11 @@ public class MonRekonPerUpiController extends HttpServlet {
         }
     }
 
+    private String safeStr(Object val) {
+        return val == null ? "" : val.toString();
+    }
+
+
     private void handleGetDetailData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int draw = Integer.parseInt(req.getParameter("draw"));
         int startIndex = Integer.parseInt(req.getParameter("start")); // dari DataTables: 0, 10, 20, ...
@@ -149,10 +156,16 @@ public class MonRekonPerUpiController extends HttpServlet {
 
         List<String> pesanOutput = new ArrayList<>();
 
+        // List<Map<String, Object>> data = service.getDataMDftPerUpi(
+        //     start, length, sortBy, sortDir, searchValue,
+        //     vbln_usulan, vkd_bank, vkd_dist, pesanOutput
+        // );
         List<Map<String, Object>> data = service.getDataMDftPerUpi(
-            start, length, sortBy, sortDir, searchValue,
-            vbln_usulan, vkd_bank, vkd_dist, pesanOutput
+            start, length, sortBy, sortDir, searchValue, vbln_usulan, vkd_bank, vkd_dist, pesanOutput
         );
+
+        System.out.println("Jumlah data yang dikembalikan untuk ekspor: " + data.size());
+
 
         // Ambil total dari TOTAL_COUNT kolom (karena sudah disediakan di setiap baris)
         int totalRecords = 0;
@@ -175,6 +188,91 @@ public class MonRekonPerUpiController extends HttpServlet {
         }
     }
 
+    private void exportAllMonDft(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String vbln_usulan = req.getParameter("vbln_usulan");
+        String vkd_bank = req.getParameter("vkd_bank");
+        String vkd_dist = req.getParameter("vkd_dist");
+
+        List<String> pesanOutput = new ArrayList<>();
+        int start = 1;
+        int length = 1_000_000; // cukup besar untuk ambil semua
+        String sortBy = "URUT";
+        String sortDir = "ASC";
+        String search = "";
+
+        // Panggil service
+        List<Map<String, Object>> dataList = service.getDataMDftPerUpi(
+            start, length, sortBy, sortDir, search, vbln_usulan, vkd_bank, vkd_dist, pesanOutput
+        );
+
+        // Buat file Excel
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        Sheet sheet = workbook.createSheet("REKON");
+
+        // Header kolom
+        String[] headers = {
+            "NO", "PRODUK", "TGLAPPROVE", "KD_DIST", "VA", "SATKER",
+            "PLN_NOUSULAN", "PLN_IDPEL", "PLN_BLTH", "PLN_LUNAS_H0", "PLN_RPTAG", "PLN_RPBK",
+            "PLN_TGLBAYAR", "PLN_JAMBAYAR", "PLN_USERID", "PLN_KDBANK",
+            "BANK_KETERANGAN", "BANK_NOUSULAN", "BANK_IDPEL", "BANK_BLTH",
+            "BANK_RPTAG", "BANK_RPBK", "BANK_TGLBAYAR", "BANK_JAMBAYAR", "BANK_USERID", "BANK_KDBANK",
+            "SELISIH_RPTAG", "SELISIH_BK", "KETERANGAN"
+        };
+
+        // Tulis header
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            headerRow.createCell(i).setCellValue(headers[i]);
+        }
+
+        // Isi data
+        int rowNum = 1;
+        for (Map<String, Object> rowMap : dataList) {
+            Row row = sheet.createRow(rowNum);
+            int col = 0;
+            row.createCell(col++).setCellValue(rowNum); // NO
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PRODUK")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("TGLAPPROVE")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("KD_DIST")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("VA")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("SATKER")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_NOUSULAN")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_IDPEL")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_BLTH")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_LUNAS_H0")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_RPTAG")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_RPBK")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_TGLBAYAR")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_JAMBAYAR")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_USERID")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("PLN_KDBANK")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_KETERANGAN")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_NOUSULAN")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_IDPEL")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_BLTH")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_RPTAG")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_RPBK")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_TGLBAYAR")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_JAMBAYAR")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_USERID")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("BANK_KDBANK")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("SELISIH_RPTAG")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("SELISIH_BK")));
+            row.createCell(col++).setCellValue(safeStr(rowMap.get("KETERANGAN")));
+            rowNum++;
+        }
+
+        // Set response untuk download file
+        String fileName = "REKON_DETAIL_" + vbln_usulan + ".xlsx";
+        resp.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        resp.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+
+        // Kirim ke client
+        workbook.write(resp.getOutputStream());
+        workbook.close();
+        workbook.dispose();
+    }
+
     // private void handleGetJenisLaporan(HttpServletRequest request, HttpServletResponse response) throws IOException {
     //     Map<String, Object> responseData = new HashMap<>();
     //     List<String> pesanOutput = new ArrayList<>();
@@ -191,48 +289,7 @@ public class MonRekonPerUpiController extends HttpServlet {
     //         responseData.put("pesan", "Terjadi kesalahan: " + e.getMessage());
     //     }
 
-    //     response.setContentType("application/json");
-    //     response.setCharacterEncoding("UTF-8");
-    //     try (PrintWriter out = response.getWriter()) {
-    //         out.print(gson.toJson(responseData));
-    //     }
-    // }
-
-    // private void handleGetsumberdata(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //     Map<String, Object> responseData = new HashMap<>();
-    //     List<String> pesanOutput = new ArrayList<>();
-
-    //     try {
-    //         List<Map<String, Object>> listSumber = service.getcombosumberdata(pesanOutput);
-    //         responseData.put("status", "success");
-    //         responseData.put("data", listSumber != null ? listSumber : Collections.emptyList());
-    //         responseData.put("pesan", pesanOutput.isEmpty() ? "" : pesanOutput.get(0));
-    //     } catch (Exception e) {
-    //         logger.log(Level.SEVERE, "Kesalahan saat mengambil sumber data", e);
-    //         responseData.put("status", "error");
-    //         responseData.put("data", Collections.emptyList());
-    //         responseData.put("pesan", "Terjadi kesalahan: " + e.getMessage());
-    //     }
-
-    //     response.setContentType("application/json");
-    //     response.setCharacterEncoding("UTF-8");
-    //     try (PrintWriter out = response.getWriter()) {
-    //         out.print(gson.toJson(responseData));
-    //     }
-    // }
-
-    // private int parseTotalCount(Object totalCountObj, int fallback) {
-    //     if (totalCountObj instanceof Number) {
-    //         return ((Number) totalCountObj).intValue();
-    //     } else if (totalCountObj != null) {
-    //         try {
-    //             return Integer.parseInt(totalCountObj.toString());
-    //         } catch (NumberFormatException ignored) {}
-    //     }
-    //     return fallback;
-    // }
-
-   
+       
     public static void main(String[] args) {
         try {
             // Setup

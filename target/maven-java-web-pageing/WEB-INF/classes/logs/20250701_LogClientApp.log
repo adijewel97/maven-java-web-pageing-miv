@@ -2068,3 +2068,13 @@
 2025-07-01 16:18:46.150 - INFO: vbln_usulan = 202505
 2025-07-01 16:18:46.150 - INFO: vkd_bank = 200
 2025-07-01 16:18:46.150 - INFO: vkd_dist = 11
+2025-07-01 16:20:19.966 - INFO: vbln_usulan: 202505
+2025-07-01 16:20:56.272 - INFO: Jumlah data dikembalikan: 24
+2025-07-01 16:21:15.592 - INFO: draw = 1
+2025-07-01 16:21:15.593 - INFO: offset (startIndex) = 0
+2025-07-01 16:21:15.594 - INFO: limit (length) = 10
+2025-07-01 16:21:15.594 - INFO: sortBy = KD_DIST ASC
+2025-07-01 16:21:15.594 - INFO: searchValue = 
+2025-07-01 16:21:15.594 - INFO: vbln_usulan = 202505
+2025-07-01 16:21:15.594 - INFO: vkd_bank = 200
+2025-07-01 16:21:15.594 - INFO: vkd_dist = 11

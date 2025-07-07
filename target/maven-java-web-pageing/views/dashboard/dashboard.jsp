@@ -1,14 +1,21 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
-    <h2>Selamat Datang - Dashboard Managemen Instansi Vertikal</h2>
-    <p>Gunakan menu di samping untuk melakukan monitoring data pelanggan.</p>
+<div class="container-fluid">
+  <div class="content-header">
+    <div class="row mb-2">
+      <div class="col-sm-12">
+        <h1 class="m-0">Selamat Datang - Dashboard Managemen Instansi Vertikal</h1>
+        <p>Gunakan menu di samping untuk melakukan monitoring data pelanggan.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Konten lainnya -->
+  <!-- <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-primary">Dashboard</h5>
+        </div>
+      </div>
+    </div>
+  </div> -->
 </div>
-</body>
-</html>

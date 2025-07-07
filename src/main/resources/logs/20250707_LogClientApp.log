@@ -1,0 +1,44 @@
+2025-07-07 07:52:06.205 - INFO: vbln_usulan: 202507
+2025-07-07 07:52:54.403 - INFO: Jumlah data dikembalikan: 7
+2025-07-07 08:09:35.001 - INFO: vbln_usulan: 202507
+2025-07-07 08:10:09.612 - INFO: Jumlah data dikembalikan: 7
+2025-07-07 08:10:51.349 - INFO: draw = 1
+2025-07-07 08:10:51.349 - INFO: offset (startIndex) = 0
+2025-07-07 08:10:51.352 - INFO: limit (length) = 10
+2025-07-07 08:10:51.352 - INFO: sortBy = KD_DIST ASC
+2025-07-07 08:10:51.354 - INFO: searchValue = 
+2025-07-07 08:10:51.355 - INFO: vbln_usulan = 202507
+2025-07-07 08:10:51.357 - INFO: vkd_bank = 200
+2025-07-07 08:10:51.358 - INFO: vkd_dist = 14
+2025-07-07 08:30:05.493 - INFO: vbln_usulan: 202507
+2025-07-07 08:30:11.564 - INFO: vbln_usulan: 202507
+2025-07-07 08:30:39.681 - INFO: Jumlah data dikembalikan: 7
+2025-07-07 08:30:45.065 - INFO: Jumlah data dikembalikan: 7
+2025-07-07 08:30:50.607 - INFO: draw = 1
+2025-07-07 08:30:50.607 - INFO: offset (startIndex) = 0
+2025-07-07 08:30:50.607 - INFO: limit (length) = 10
+2025-07-07 08:30:50.607 - INFO: sortBy = KD_DIST ASC
+2025-07-07 08:30:50.607 - INFO: searchValue = 
+2025-07-07 08:30:50.607 - INFO: vbln_usulan = 202507
+2025-07-07 08:30:50.607 - INFO: vkd_bank = 200
+2025-07-07 08:30:50.607 - INFO: vkd_dist = 22
+2025-07-07 08:46:23.912 - INFO: vbln_usulan: 202507
+2025-07-07 08:46:59.951 - INFO: Jumlah data dikembalikan: 7
+2025-07-07 08:47:03.973 - INFO: draw = 1
+2025-07-07 08:47:03.973 - INFO: offset (startIndex) = 0
+2025-07-07 08:47:03.976 - INFO: limit (length) = 10
+2025-07-07 08:47:03.977 - INFO: sortBy = KD_DIST ASC
+2025-07-07 08:47:03.977 - INFO: searchValue = 
+2025-07-07 08:47:03.977 - INFO: vbln_usulan = 202507
+2025-07-07 08:47:03.977 - INFO: vkd_bank = 200
+2025-07-07 08:47:03.981 - INFO: vkd_dist = 22
+2025-07-07 09:12:17.325 - INFO: vbln_usulan: 202507
+2025-07-07 09:12:52.111 - INFO: Jumlah data dikembalikan: 7
+2025-07-07 09:12:54.740 - INFO: draw = 1
+2025-07-07 09:12:54.740 - INFO: offset (startIndex) = 0
+2025-07-07 09:12:54.743 - INFO: limit (length) = 10
+2025-07-07 09:12:54.745 - INFO: sortBy = KD_DIST ASC
+2025-07-07 09:12:54.747 - INFO: searchValue = 
+2025-07-07 09:12:54.747 - INFO: vbln_usulan = 202507
+2025-07-07 09:12:54.747 - INFO: vkd_bank = 200
+2025-07-07 09:12:54.748 - INFO: vkd_dist = 22

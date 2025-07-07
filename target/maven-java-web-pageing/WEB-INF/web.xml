@@ -1,16 +1,16 @@
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="3.1">
-    <display-name>BPBL Web</display-name>
+    <display-name>MIV Web</display-name>
 
-    <!-- Definisikan servlet BpblController -->
+    <!-- Definisikan servlet MIVController -->
     <servlet>
-        <servlet-name>BpblController</servlet-name>
-        <servlet-class>com.example.controller.BpblController</servlet-class>
+        <servlet-name>MIVController</servlet-name>
+        <servlet-class>com.example.controller.MIVController</servlet-class>
     </servlet>
 
-    <!-- Mapping servlet ke URL /bpbl -->
+    <!-- Mapping servlet ke URL /MIV -->
     <servlet-mapping>
-        <servlet-name>BpblController</servlet-name>
-        <url-pattern>/bpbl</url-pattern>
+        <servlet-name>MIVController</servlet-name>
+        <url-pattern>/MIV</url-pattern>
     </servlet-mapping>
 
     <servlet>

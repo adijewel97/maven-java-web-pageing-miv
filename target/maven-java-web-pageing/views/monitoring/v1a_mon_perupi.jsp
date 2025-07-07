@@ -60,7 +60,6 @@
         width: 100%;
     }
 
-
     /* Buat spinner tetap di tengah form tapi transparan */
     .loading-overlay {
         position: absolute;
@@ -76,6 +75,29 @@
     /* tambah lebar large modal */
     .modal-xxl {
         max-width: 98% !important; /* Atur sesuai kebutuhan */
+    }
+
+    /* legenda tulisan hedar dan kotak  */
+    .form-box {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .form-box legend {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .form-box fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #bln_usulan {
+        text-transform: uppercase;
     }
 
 </style>
@@ -100,28 +122,10 @@
       </div>
       <div class="modal-body" id="modalBody">
         <div class="mb-2">
-          <button id="downloadMonDftExcelBtnAll" class="btn btn-primary btn-export">
+          <button id="btnExportAllExcel" class="btn btn-primary btn-export">
             Download Excel
           </button>
-
-          <button id="btnExportAllExcel" class="btn btn-success">
-            Download Excel Semua
-        </button>
         </div>
-
-        <!-- <div class="row g-3 mb-3">
-          <div class="col-md-3">
-            <label for="xbln_usulan">Bulan Usulan :</label>
-            <input type="text" class="form-control" id="xbln_usulan">
-          </div>
-          <div class="col-md-3">
-            <label for="xkd_dist">Kode Distribusi :</label>
-            <input type="text" class="form-control" id="xkd_dist">
-          </div>
-        </div> -->
-
-        <!-- <div class="datatable-container">
-          <table id="table_mondaf_upi" class="table table-bordered table-striped w-100" width="100%"> -->
         <div class="datatable-container" style="overflow-x: auto;">
          <table id="table_mondaf_upi" class="table table-bordered table-striped w-100" width="100%">
                 <thead>
@@ -174,24 +178,30 @@
   </div>
 </div>
 
-<div class="pt-4 px-4">
-    <h2 class="page-title">Monitoring Rekon MIV PLN vs BANK (PerUPI)</h2>
+<fieldset style="border: 1px solid #ccc; border-radius: 4px; padding: 1.25rem;">
+    <legend style="font-size: 0.95rem; font-weight: bold; padding: 0 0.75rem; width: auto;">
+        Monitoring Rekon PLN Vs Bank
+    </legend>
 
-    <div class="container mt-4">
+    <div class="container mt-1">
         <div class="form-monitoring">
-            <h5 class="section-title">Monitoring Per-UPI</h5>
-
             <form id="form-monitoring">
-                <div class="row g-3 mb-3">
-                    <div class="col-md-3">
-                        <label for="bln_usulan">Bulan Laporan :</label>
-                        <input type="text" class="form-control" id="bln_usulan" placeholder="YYYYMM = 202505" value="202505">
+                <div class="row align-items-end g-3 mb-2">
+                    <!-- Input Bulan Laporan -->
+                    <div class="col-md-4 col-lg-3">
+                        <label for="bln_usulan" class="form-label">Bulan Laporan :</label>
+                        <div class="input-group">
+                            <input type="text" id="bln_usulan" class="form-control" placeholder="Pilih Bulan Laporan">
+                            <span class="input-group-text" id="calendarIcon" style="cursor: pointer;">
+                                <i class="fa-solid fa-calendar-alt"></i>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-12 text-start">
-                        <button id="btnTampil" type="button" class="btn btn-primary">
+
+                    <!-- Tombol Tampilkan -->
+                    <div class="col-md-2">
+                        <label class="form-label d-none d-md-block">&nbsp;</label> <!-- Spacer agar sejajar -->
+                        <button id="btnTampil" type="button" class="btn btn-primary w-100">
                             <i class="bi bi-search"></i> Tampilkan
                         </button>
                     </div>
@@ -205,24 +215,22 @@
             </div>
 
             <div class="datatable-container">
-                <div class="datatable-scroll-wrapper" style="overflow-x: auto;"></div>
+                <div class="datatable-scroll-wrapper" style="overflow-x: auto;">
                     <table id="tablemon_upi" class="datatable-main table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>NO</th> 
-                                <!-- <th>KD_DIST</th>  -->
-                                <th>NAMA_DIST</th> 
-                                <!-- <th>URUT</th>  -->
-                                <th>PRODUK</th> 
-                                <th>BANK</th> 
-                                <th>BULAN</th> 
-                                <th>PLN_IDPEL</th> 
-                                <th>PLN_RPTAG</th> 
-                                <th>PLN_LB_LUNAS</th> 
-                                <th>PLN_RP_LUNAS</th> 
-                                <th>BANK_IDPEL</th> 
-                                <th>BANK_RPTAG</th> 
-                                <th>SELISIH_RPTAG</th> 
+                                <th>NO</th>
+                                <th>NAMA_DIST</th>
+                                <th>PRODUK</th>
+                                <th>BANK</th>
+                                <th>BULAN</th>
+                                <th>PLN_IDPEL</th>
+                                <th>PLN_RPTAG</th>
+                                <th>PLN_LB_LUNAS</th>
+                                <th>PLN_RP_LUNAS</th>
+                                <th>BANK_IDPEL</th>
+                                <th>BANK_RPTAG</th>
+                                <th>SELISIH_RPTAG</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -231,14 +239,52 @@
             </div>
         </div>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+</fieldset>
 
 <script>
     $(document).ready(function () {
+        function getContextPath() {
+            const path = window.location.pathname;
+            const firstSlash = path.indexOf("/", 1);
+            return path.substring(0, firstSlash !== -1 ? firstSlash : path.length);
+        }
+
+        function convertBulanTahunToYYYYMM(str) {
+            const date = new Date(str); // "July 2025" akan dikenali oleh Date
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+            return year+month; // hasil: "202507"
+        }
+
+        // Inisialisasi flatpickr dengan locale Indonesia
+        const blnUsulanInstance = flatpickr("#bln_usulan", {
+            locale: 'id', // ✅ Ganti ini dari flatpickr.l10ns.id
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: false,
+                    theme: "light"
+                })
+            ],
+            dateFormat: "Ym",
+            altInput: true,
+            altFormat: "F Y",
+            defaultDate: new Date()
+        });
+
+        // const blnUsulanInstance = flatpickr("#bln_usulan", {
+        //     plugins: [
+        //         new monthSelectPlugin({ shorthand: true, theme: "light" })
+        //     ],
+        //     dateFormat: "Ym", // HARUS ini, agar jadi "202507"
+        //     defaultDate: new Date()
+        // });
+
+
+        // Saat ikon diklik, buka datepicker
+        document.getElementById("calendarIcon").addEventListener("click", function () {
+            blnUsulanInstance.open();
+        });
+
         let detailFilterParams = {};
 
         // memembat format number digit
@@ -272,10 +318,10 @@
             searching: false, 
             autoWidth: false,
             ajax: {
-                url: 'mon-rekon-bankvsperupi',
+                url:  getContextPath() + '/mon-rekon-bankvsperupi',
                 type: 'POST',
                 data: function (d) {
-                    d.vbln_usulan = $('#bln_usulan').val(); // pastikan pakai '#'!
+                    d.vbln_usulan = convertBulanTahunToYYYYMM($('#bln_usulan').val());// pastikan pakai '#'!
                 }
             },
             columns: [
@@ -367,8 +413,12 @@
                 { targets: 11, className: 'dt-body-right', width: '120px' }                        // SELISIH_RPTAG
             ],
             createdRow: function (row, data, dataIndex) {
-                if (data.URUT == 5) {
-                    $('td', row).css({ 'font-weight': 'bold' });
+               if (data.URUT == 5) {
+                    $('td', row).css({
+                        'font-weight': 'bold',
+                        // 'background-color': 'black',
+                        // 'color': 'white'
+                    });
                 }
 
                 $('td', row).each(function (colIndex) {
@@ -384,21 +434,20 @@
                     const allowedColumns = ['PLN_IDPEL', 'PLN_RPTAG'];
 
                     if (
-                        allowedColumns.includes(columnName) && 
-                        !isNaN(cellValue) && 
-                        Number(cellValue) > 0
+                        allowedColumns.includes(columnName) &&
+                        typeof cellValue === 'string' &&
+                        cellValue.trim() !== '' &&
+                        (data.URUT == 1 || data.URUT == 2 || data.URUT == 3)
                     ) {
                         $(this).css({
                             'cursor': 'pointer',
                             'text-decoration': 'underline',
                             'color': 'blue'
                         }).off('click').on('click', function () {
-                            if (data.URUT == 1 || data.URUT == 2 || data.URUT == 3) {
-                                $('#xbln_usulan').val(data.BLN_USULAN);
-                                $('#xkd_dist').val(data.KD_DIST);
-                            }
+                            $('#xbln_usulan').val(data.BLN_USULAN);
+                            $('#xkd_dist').val(data.KD_DIST);
 
-                            // Perbarui isi detailFilterParams SETIAP klik
+                            // Update filter
                             detailFilterParams = {
                                 vbln_usulan: data.BLN_USULAN,
                                 vkd_bank: data.BANK ? data.BANK.substring(0, 3) : '',
@@ -406,7 +455,6 @@
                             };
 
                             console.log('Updated filter params:', detailFilterParams);
-
                             $('#dataModal').modal('show');
                         });
                     }
@@ -476,7 +524,7 @@
                 serverSide: true,
                 scrollX: true,
                 ajax: {
-                    url: 'mon-rekon-bankvsperupi',
+                    url: getContextPath() + '/mon-rekon-bankvsperupi',
                     type: 'POST',
                     data: function (d) {
                         d.act         = 'detailData';
@@ -564,115 +612,14 @@
             });
         });
        
+        // ----------------------------------------------------------------------------
+        // 1C Export ke exel semua data
+        // ----------------------------------------------------------------------------
         const contextPath = '<%= request.getContextPath() %>';
-        $('#downloadMonDftExcelBtnAll').on('click', async function () {
-            const btn = $(this);
-            btn.prop('disabled', true).text('Mengunduh...');
-
-            try {
-                const url = window.location.origin + contextPath + '/mon-rekon-bankvsperupi';
-                console.log('info url ' + url);
-
-                const params = new URLSearchParams();
-                params.append('act', 'detailData');
-                params.append('vbln_usulan', detailFilterParams.vbln_usulan);
-                params.append('vkd_bank', detailFilterParams.vkd_bank);
-                params.append('vkd_dist', detailFilterParams.vkd_dist);
-                params.append('start', 0);
-                params.append('length', 999999); // ambil semua record
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params.toString()
-                });
-
-                // Cek response dari server
-                if (!response.ok) {
-                        const text = await response.text();
-                        console.error('Gagal fetch, response bukan OK:\n', text);
-                        throw new Error(`(${response.status}) ${response.statusText}\n${text}`);
-                    }
-
-
-                // Pastikan konten JSON
-                const contentType = response.headers.get('content-type') || '';
-                if (!contentType.includes('application/json')) {
-                    const errText = await response.text();
-                    throw new Error('Server mengembalikan format tidak valid:\n' + errText);
-                }
-
-                const json = await response.json();
-                const allData = json.data || [];
-
-                if (allData.length === 0) {
-                    throw new Error('Data kosong, tidak dapat diekspor.');
-                }
-
-                const headers = {
-                    'NO': '',
-                    'PRODUK': '',
-                    'TGLAPPROVE': '',
-                    'KD_DIST': '',
-                    'VA': '',
-                    'SATKER': '',
-                    'PLN_NOUSULAN': '',
-                    'PLN_IDPEL': '',
-                    'PLN_BLTH': '',
-                    'PLN_LUNAS_H0': '',
-                    'PLN_RPTAG': '',
-                    'PLN_RPBK': '',
-                    'PLN_TGLBAYAR': '',
-                    'PLN_JAMBAYAR': '',
-                    'PLN_USERID': '',
-                    'PLN_KDBANK': '',
-                    'BANK_KETERANGAN': '',
-                    'BANK_NOUSULAN': '',
-                    'BANK_IDPEL': '',
-                    'BANK_BLTH': '',
-                    'BANK_RPTAG': '',
-                    'BANK_RPBK': '',
-                    'BANK_TGLBAYAR': '',
-                    'BANK_JAMBAYAR': '',
-                    'BANK_USERID': '',
-                    'BANK_KDBANK': '',
-                    'SELISIH_RPTAG': '',
-                    'SELISIH_BK': '',
-                    'KETERANGAN': ''
-                };
-
-                const formattedData = allData.map((item, idx) => {
-                    const row = {};
-                    Object.keys(headers).forEach((key) => {
-                        row[key] = item[key] !== undefined && item[key] !== null ? item[key] : '';
-                    });
-                    row['NO'] = idx + 1;
-                    return row;
-                });
-
-                const worksheet = XLSX.utils.json_to_sheet(formattedData, { header: Object.keys(headers) });
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "REKON_DETAIL_MIV");
-
-                const filename = `REKON_DETAIL_MIV_BANK_VS_BANK_${detailFilterParams.vbln_usulan}.xlsx`;
-                XLSX.writeFile(workbook, filename);
-
-            } catch (error) {
-                alert('Gagal ekspor data:\n' + error.message);
-                console.error('[Export Error]', error);
-            } finally {
-                btn.prop('disabled', false).text('Download Excel');
-            }
-        });
-
-        const contextPath2 = '<%= request.getContextPath() %>';
-
         $('#btnExportAllExcel').on('click', function () {
             const form = $('<form>', {
                 method: 'POST',
-                action: contextPath2 + '/mon-rekon-bankvsperupi'
+                action: contextPath + '/mon-rekon-bankvsperupi'
             });
 
             // Parameter yang ingin dikirim ke controller

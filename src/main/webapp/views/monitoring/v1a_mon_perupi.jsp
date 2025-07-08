@@ -100,14 +100,43 @@
         text-transform: uppercase;
     }
 
+    /* ----------
+       Spiner css
+       ----------
+    */
+    #loadingSpinner {
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 9999;
+        /* background-color: rgba(255, 255, 255, 0.7); */
+        padding: 20px 30px;
+        border-radius: 6px;
+        /* box-shadow: 0 0 10px rgba(0,0,0,0.2); */
+        text-align: center;
+    }
+
+
+    #loadingSpinner .spinner-content {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    .overlay-spinner {
+        position: absolute;
+        top: 40%;
+        left: 45%;
+        z-index: 1060;
+    }
+
 </style>
 
-<!-- Tambahkan di bawah tombol #btnTampil:  -->
-<div id="loadingSpinner" class="loading-overlay" style="display: none;">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-  <div class="mt-2 text-primary"><strong>Memuat data ...</strong></div>
+<!-- ✅ Spinner Global untuk semua loading -->
+<div id="spinnerOverlay" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999;">
+    <div class="spinner-border text-primary" role="status"></div>
 </div>
 
 
@@ -116,18 +145,19 @@
   <!-- <div class="modal-dialog modal-dialog-scrollable modal-xl"> -->
   <div class="modal-dialog modal-dialog-scrollable modal-xl modal-xxl">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="dataModalLabel">Detail Data</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body" id="modalBody">
-        <div class="mb-2">
-          <button id="btnExportAllExcel" class="btn btn-primary btn-export">
-            Download Excel
-          </button>
+        <div class="modal-header">
+            <h5 class="modal-title" id="dataModalLabel">Detail Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Tombol Export -->
+            <div class="mb-2">
+                <button id="btnExportMonDftAllExcelOneSheet" class="btn btn-success btn-export">
+                    <i class="fa fa-file-excel-o"></i> Export Detail Per-UPI
+                </button>
+            </div>
         <div class="datatable-container" style="overflow-x: auto;">
-         <table id="table_mondaf_upi" class="table table-bordered table-striped w-100" width="100%">
+        <table id="table_mondaf_upi" class="table table-bordered table-striped w-100" width="100%">
                 <thead>
                 <tr>
                     <th>NO</th>
@@ -210,9 +240,13 @@
         </div>
 
         <div class="mt-4">
+           <!-- Tombol export buatan sendiri -->
             <div class="mb-2">
-                <button id="downloadMonRekapExcelBtnPage" class="btn btn-success btn-export">Download Excel</button>
+                <button id="btnExportMonRkpAllExcel" class="btn btn-success btn-export">
+                    <i class="fa fa-file-excel-o"></i> Download Excel
+                </button>
             </div>
+
 
             <div class="datatable-container">
                 <div class="datatable-scroll-wrapper" style="overflow-x: auto;">
@@ -256,7 +290,7 @@
 
         // Inisialisasi flatpickr dengan locale Indonesia
         const blnUsulanInstance = flatpickr("#bln_usulan", {
-            locale: 'id', // ✅ Ganti ini dari flatpickr.l10ns.id
+            locale: flatpickr.l10ns.id, // ✅ Ini cara yang benar
             plugins: [
                 new monthSelectPlugin({
                     shorthand: false,
@@ -268,15 +302,6 @@
             altFormat: "F Y",
             defaultDate: new Date()
         });
-
-        // const blnUsulanInstance = flatpickr("#bln_usulan", {
-        //     plugins: [
-        //         new monthSelectPlugin({ shorthand: true, theme: "light" })
-        //     ],
-        //     dateFormat: "Ym", // HARUS ini, agar jadi "202507"
-        //     defaultDate: new Date()
-        // });
-
 
         // Saat ikon diklik, buka datepicker
         document.getElementById("calendarIcon").addEventListener("click", function () {
@@ -296,19 +321,11 @@
             });
         }
 
-        // Menapilkan loading saat proses sedang belangsung 
-        var spinner = document.getElementById("loadingSpinner");
-        if (spinner) {
-            spinner.style.display = "block";
-        } else {
-            console.warn("Elemen #loadingSpinner tidak ditemukan di DOM");
-        }
-
         // ---------------------------------------------------------------------------------------------
         // 1A) Tampilkan monitoring Rekap
         // ---------------------------------------------------------------------------------------------
         var table = $('#tablemon_upi').DataTable({
-            processing: true,
+            processing: false,
             serverSide: true,
             scrollX: false,
             paging: false, // MATIKAN PAGING
@@ -458,17 +475,25 @@
                     }
                 });
             },
-            dom: 'lfrtip'
+            // dom: 'lfrtip'
+            dom: 'Bfrtip', // <-- penting! tambahkan B agar buttons aktif
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'MONITORING_REKAP_'+convertBulanTahunToYYYYMM($('#bln_usulan').val()),
+                    className: 'd-none' // sembunyikan tombol bawaan
+                }
+            ],
         });
 
-        // Tampilkan spinner saat DataTables mulai load data
+        // Tampilkan spinnerOverlay saat DataTables mulai load data
         table.on('preXhr.dt', function () {
-            $('#loadingSpinner').show();
+           $('#spinnerOverlay').show();  
         });
 
-        // Sembunyikan spinner setelah DataTables selesai load data
+        // Sembunyikan spinnerOverlay setelah DataTables selesai load data
         table.on('xhr.dt', function () {
-            $('#loadingSpinner').hide();
+            $('#spinnerOverlay').hide();    // Saat selesai
         });
 
         $('#btnTampil').on('click', function () {
@@ -477,35 +502,15 @@
                 return;
             }
 
-            $('#loadingSpinner').show();
+            $('#spinnerOverlay').show();   // hanya tampilkan overlay modal
             table.ajax.reload();
         });
 
-        // Ekspor halaman ke Excel
-        $('#downloadMonRekapExcelBtnPage').on('click', function () {
-            const rawData = table.rows({ search: 'applied' }).data().toArray();
-
-            const exportData = rawData.map(row => ({
-                'KD_DIST - NAMA_DIST': row.KD_DIST + ' - ' + row.NAMA_DIST,
-                'PRODUK': row.PRODUK,
-                'BANK': row.BANK,
-                'BULAN': row.BLN_USULAN,
-                'PLN_IDPEL': row.PLN_IDPEL?.toString(),        // ubah ke string untuk jaga leading zero
-                'PLN_RPTAG': Number(row.PLN_RPTAG),            // biarkan angka untuk kalkulasi
-                'PLN_LEBAR_LUNAS': Number(row.PLN_LEBAR_LUNAS),
-                'PLN_RPTAG_LUNAS': Number(row.PLN_RPTAG_LUNAS),
-                'BANK_IDPEL': row.BANK_IDPEL?.toString(),
-                'BANK_RPTAG': Number(row.BANK_RPTAG),
-                'SELISIH_RPTAG': Number(row.SELISIH_RPTAG)
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'REKON_REKAP_MIV');
-
-            const filename = 'REKAP_MIV_REKON_BANK_VS_PLN_'+$('#bln_usulan').val()+'.xlsx';
-            XLSX.writeFile(wb, filename);
+        // Ekspor halaman Monitoring Rekap ke Excel
+        $('#btnExportMonRkpAllExcel').on('click', function () {
+            table.button('.buttons-excel').trigger();
         });
+
 
         // ---------------------------------------------------------------------------------------------
         // 1B) show Data Monitoring Detail/Daftar PerUpi Modal Large 
@@ -611,24 +616,122 @@
         });
        
         // ----------------------------------------------------------------------------
-        // 1C Export ke exel semua data
+        // 1C Export ke exel semua data MON daftar
         // ----------------------------------------------------------------------------
-        const contextPath = '<%= request.getContextPath() %>';
-        $('#btnExportAllExcel').on('click', function () {
-            const form = $('<form>', {
-                method: 'POST',
-                action: contextPath + '/mon-rekon-bankvsperupi'
-            });
+        // Fungsi format angka ribuan (lokal Indonesia)
+        const formatRibuan = (angka) => new Intl.NumberFormat('id-ID').format(angka);
 
-            // Parameter yang ingin dikirim ke controller
-            form.append($('<input>', { type: 'hidden', name: 'act', value: 'exportExcelAll' }));
-            form.append($('<input>', { type: 'hidden', name: 'vbln_usulan', value: detailFilterParams.vbln_usulan }));
-            form.append($('<input>', { type: 'hidden', name: 'vkd_bank', value: detailFilterParams.vkd_bank }));
-            form.append($('<input>', { type: 'hidden', name: 'vkd_dist', value: detailFilterParams.vkd_dist }));
+        $('#btnExportMonDftAllExcelOneSheet').on('click', async function () {
+           const btn = $(this);
+            let totalLoaded = 0;
 
-            // Form disisipkan ke body dan langsung submit
-            $('body').append(form);
-            form.submit();
+            $('#spinnerOverlay').show();          // ✅ Atau pakai overlay
+            await new Promise(resolve => setTimeout(resolve, 30)); // render delay
+
+            btn.prop('disabled', true).text("Memuat... ("+formatRibuan(totalLoaded)+" data)");
+
+            const vbln_usulan = detailFilterParams.vbln_usulan;
+            const vkd_bank    = detailFilterParams.vkd_bank;
+            const vkd_dist    = detailFilterParams.vkd_dist;
+
+            if (!vbln_usulan || !vkd_bank || !vkd_dist) {
+                alert('Silakan lengkapi filter terlebih dahulu!');
+                btn.prop('disabled', false).text('Export Excel Per-UID/UIW');
+                return;
+            }
+
+            try {
+                const pageSize = 1000;
+                let start = 0;
+                let allData = [];
+                let drawCounter = 1;
+
+                // Header sesuai urutan kolom Excel
+                const headers = {
+                    PRODUK: '', TGLAPPROVE: '', KD_DIST: '', VA: '', SATKER: '',
+                    PLN_NOUSULAN: '', PLN_IDPEL: '', PLN_BLTH: '', PLN_LUNAS_H0: '',
+                    PLN_RPTAG: '', PLN_RPBK: '', PLN_TGLBAYAR: '', PLN_JAMBAYAR: '',
+                    PLN_USERID: '', PLN_KDBANK: '', //BANK_KETERANGAN: '', 
+                    BANK_NOUSULAN: '',
+                    BANK_IDPEL: '', BANK_BLTH: '', BANK_RPTAG: '', BANK_RPBK: '',
+                    BANK_TGLBAYAR: '', BANK_JAMBAYAR: '', BANK_USERID: '', BANK_KDBANK: '',
+                    SELISIH_RPTAG: '', SELISIH_BK: '', KETERANGAN: ''
+                };
+
+                while (true) {
+                    const params = new URLSearchParams();
+                    params.append('act', 'detailData');
+                    params.append('vbln_usulan', vbln_usulan);
+                    params.append('vkd_bank', vkd_bank);
+                    params.append('vkd_dist', vkd_dist);
+                    params.append('start', start);
+                    params.append('length', pageSize);
+                    params.append('draw', drawCounter++);
+                    params.append('order[0][column]', '0');
+                    params.append('order[0][dir]', 'asc');
+                    params.append('columns[0][data]', 'KD_DIST');
+                    params.append('search[value]', '');
+
+                    const response = await fetch(getContextPath() + '/mon-rekon-bankvsperupi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: params.toString()
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error('Status: ' + response.status + '\n' + errorText);
+                    }
+
+                    const json = await response.json();
+                    const data = json.data;
+
+                    if (!data || data.length === 0) break;
+
+                    const formatted = data.map((item, index) => {
+                        const row = { NO: start + index + 1 };
+                        Object.keys(headers).forEach(key => {
+                            row[key] = item[key] || '';
+                        });
+                        return row;
+                    });
+
+                    allData = allData.concat(formatted);
+
+                    // ✅ Tampilkan progress format ribuan
+                    totalLoaded += data.length;
+                    btn.text("Memuat... ("+formatRibuan(totalLoaded)+" data)");
+                    await new Promise(resolve => setTimeout(resolve, 10)); // Biarkan UI refresh
+
+                    if (data.length < pageSize) break;
+
+                    start += pageSize;
+                }
+
+                if (allData.length === 0) {
+                    alert('Tidak ada data untuk diekspor!');
+                    return;
+                }
+
+                // Ekspor semua data ke satu sheet Excel
+                const ws = XLSX.utils.json_to_sheet(allData, { header: ['NO', ...Object.keys(headers)] });
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'REKON_PLNvsBANK');
+
+                const filename = "MIV_REKON_DETAIL_"+vbln_usulan+"_"+vkd_bank+"_"+vkd_dist+".xlsx";
+                XLSX.writeFile(wb, filename);
+
+                alert("Export selesai! Total baris: "+ formatRibuan(allData.length));
+            } catch (err) {
+                alert('Terjadi error: ' + err.message);
+                console.error(err);
+                $('#spinnerOverlay').hide();
+            } finally {
+                btn.prop('disabled', false).text('Export Excel Per-UID/UIW');
+                $('#spinnerOverlay').hide();
+            }
         });
 
     });

@@ -23,26 +23,30 @@
     <meta http-equiv="Pragma" content="no-cache" />
 
     <!-- ✅ CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap-icons/bootstrap-icons.css"> -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap/dist/css/adminlte.min.css">
+    <!-- Coba pakai CDN dulu -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" onerror="this.onerror=null;this.href='${pageContext.request.contextPath}/assets/bootstrap/css/6.5.0/all.min.css';">
 
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/dataTables/css/jquery.dataTables.min.css">
+
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">   
 
     <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap/dist/plugins/flatpickr.min.css">
     <!-- Plugin Month Select CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap/dist/plugins/style.css">
 
     <!-- Pastikan Bootstrap CSS & JS sudah disertakan -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap/css/bootstrap.min.css">
+    <script src="${pageContext.request.contextPath}/assets/bootstrap/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/bootstrap/js/jquery-3.5.1.slim.min.js"></script>
 
     
     <!-- ✅ SCRIPT: jQuery HARUS PALING ATAS -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/bootstrap/dist/js/jquery.min.js"></script>
 
     <style>
         .content-panel {
@@ -91,24 +95,28 @@
 </div>
 
 
-<!-- ✅ Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- WAJIB: Bootstrap 5 JS -->
+<script src="${pageContext.request.contextPath}/assets/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- ✅ AdminLTE -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/bootstrap/dist/js/adminlte.min.js"></script>
 
 <!-- ✅ Flatpickr & Month Plugin -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+<script src="${pageContext.request.contextPath}/assets/bootstrap/dist/plugins/flatpickr.js"></script>
+<script src="${pageContext.request.contextPath}/assets/bootstrap/dist/plugins/index.js"></script>
+<!-- ✅ Locale Bahasa Indonesia untuk Flatpickr -->
+<script src="${pageContext.request.contextPath}/assets/bootstrap/dist/plugins/id.js"></script>
+
 
 <!-- ✅ DataTables & Export -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/dataTables.buttons.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/buttons.html5.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/dataTables/js/jszip.min.js"></script>
 
 <!-- ✅ Export Excel via SheetJS -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/bootstrap/dist/js/xlsx.full.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
 
 </body>
 </html>

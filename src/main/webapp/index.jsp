@@ -23,6 +23,8 @@
     <meta http-equiv="Pragma" content="no-cache" />
 
     <!-- ✅ CSS -->
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/favicon.ico">
+
     <!-- <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap-icons/bootstrap-icons.css"> -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/bootstrap/dist/css/adminlte.min.css">
     <!-- Coba pakai CDN dulu -->

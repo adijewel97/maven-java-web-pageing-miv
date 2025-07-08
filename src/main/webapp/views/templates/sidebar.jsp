@@ -27,7 +27,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index.jsp?page=/views/dashboard/dashboard.jsp&menu=dashboard" class="brand-link">
-        <img src="/assets/images/logo-mivPLNBANK.png" alt="Logo" class="brand-image img-circle">
+        <img src="${pageContext.request.contextPath}/assets/images/logo-mivPLNBANK.png" alt="Logo" class="brand-image img-circle">
         <span class="brand-text font-weight-light">MIV</span>
     </a>
 

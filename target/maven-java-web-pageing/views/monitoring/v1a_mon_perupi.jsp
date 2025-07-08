@@ -723,7 +723,7 @@
                 const filename = "MIV_REKON_DETAIL_"+vbln_usulan+"_"+vkd_bank+"_"+vkd_dist+".xlsx";
                 XLSX.writeFile(wb, filename);
 
-                alert("Export selesai! Total baris: "+ formatRibuan(allData.length));
+                // alert("Export selesai! Total baris: "+ formatRibuan(allData.length));
             } catch (err) {
                 alert('Terjadi error: ' + err.message);
                 console.error(err);

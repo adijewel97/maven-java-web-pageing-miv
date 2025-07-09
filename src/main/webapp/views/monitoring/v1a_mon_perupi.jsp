@@ -180,7 +180,7 @@
                     <th>PLN_JAMBAYAR</th>
                     <th>PLN_USERID</th>
                     <th>PLN_KDBANK</th>
-                    <th>BANK_KETERANGAN</th>
+                    <!-- <th>BANK_KETERANGAN</th> -->
                     <th>BANK_NOUSULAN</th>
                     <th>BANK_IDPEL</th>
                     <th>BANK_BLTH</th>
@@ -614,7 +614,7 @@
                     { data: 'PLN_JAMBAYAR' },
                     { data: 'PLN_USERID' },
                     { data: 'PLN_KDBANK' },
-                    { data: 'BANK_KETERANGAN' },
+                    // { data: 'BANK_KETERANGAN' },
                     { data: 'BANK_NOUSULAN' },
                     { data: 'BANK_IDPEL' },
                     { data: 'BANK_BLTH' },

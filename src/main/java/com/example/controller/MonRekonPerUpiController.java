@@ -40,11 +40,6 @@ public class MonRekonPerUpiController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String act = req.getParameter("act");
-        
-        if ("exportJsonAll".equalsIgnoreCase(act)) {
-            handleExportJsonAll(req, resp);
-            return;
-        }
 
         if ("detailData".equalsIgnoreCase(act)) {
             handleGetDetailData(req, resp);
@@ -172,54 +167,6 @@ public class MonRekonPerUpiController extends HttpServlet {
             out.print(gson.toJson(jsonResponse));
         }
     }
-    
-    // Export kontroler all monitoring daftar
-    private void handleExportJsonAll(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String vbln_usulan = req.getParameter("vbln_usulan");
-        String vkd_bank    = req.getParameter("vkd_bank");
-        String vkd_dist    = req.getParameter("vkd_dist");
-
-        // Default value untuk pagination yang besar (ambil semua)
-        int start = 1;
-        int length = 1_000_000; // Ambil maksimum
-        String sortBy = "URUT";
-        String sortDir = "ASC";
-        String searchValue = ""; // Tidak ada pencarian
-        List<String> pesanOutput = new ArrayList<>();
-
-        // Panggil service untuk ambil data
-        List<Map<String, Object>> allData = service.getDataMDftPerUpi(
-            start, length, sortBy, sortDir, searchValue,
-            vbln_usulan, vkd_bank, vkd_dist, pesanOutput
-        );
-
-        // Set response JSON
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", allData);
-        response.put("recordsFiltered", allData != null ? allData.size() : 0);
-        response.put("pesan", "Sukses: Data berhasil diekspor");
-
-        resp.getWriter().write(new Gson().toJson(response));
-    }
-
-    // private void handleGetJenisLaporan(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //     Map<String, Object> responseData = new HashMap<>();
-    //     List<String> pesanOutput = new ArrayList<>();
-
-    //     try {
-    //         List<Map<String, Object>> listJenis = service.getcombojenislaporan(pesanOutput);
-    //         responseData.put("status", "success");
-    //         responseData.put("data", listJenis != null ? listJenis : Collections.emptyList());
-    //         responseData.put("pesan", pesanOutput.isEmpty() ? "" : pesanOutput.get(0));
-    //     } catch (Exception e) {
-    //         logger.log(Level.SEVERE, "Kesalahan saat mengambil jenis laporan", e);
-    //         responseData.put("status", "error");
-    //         responseData.put("data", Collections.emptyList());
-    //         responseData.put("pesan", "Terjadi kesalahan: " + e.getMessage());
-    //     }
 
        
     public static void main(String[] args) {

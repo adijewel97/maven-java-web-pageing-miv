@@ -79,3 +79,24 @@
         </nav>
     </div>
 </aside>
+
+<script>
+  // Peta menu -> Judul
+  const pageTitleMap = {
+    'dashboard': 'Dashboard',
+    'monitoring-rekon-bank-upi': 'Monitoring Rekon PLN Vs Bank (Per-UID/UIW)',
+    'Daftar-prov-upi': 'Daftar Provinsi / UPI',
+    'monitoring-rekon-upi': 'Monitoring Rekon per UPI',
+    // Tambahkan sesuai kebutuhan
+  };
+
+  // Ambil parameter `menu` dari URL
+  const params = new URLSearchParams(window.location.search);
+  const menu = params.get('menu');
+
+  // Ubah judul navbar jika `menu` ditemukan dalam peta
+  if (menu && pageTitleMap[menu]) {
+    document.getElementById('pageTitle').textContent = pageTitleMap[menu];
+  }
+</script>
+

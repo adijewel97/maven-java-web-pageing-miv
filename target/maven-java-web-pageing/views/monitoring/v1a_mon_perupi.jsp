@@ -863,7 +863,11 @@
             let namaUPI  = '';
             try {
                 namaBank = await fetchNamaBank(vkd_bank);
-                namaUPI  = await fetchNamaUnitUPI(vkd_dist);
+                if (vkd_dist === '00') {
+                     namaUPI  = '00 - SAKTI'
+                } else {
+                    namaUPI  = await fetchNamaUnitUPI(vkd_dist);
+                }
                 const pageSize = 1000;
                 let start = 0;
                 let allData = [];
@@ -949,15 +953,15 @@
                     { v: ": "+ vbln_usulan.substring(4, 6) + '/' + vbln_usulan.substring(0, 4)  }
                 ]);
                 rows.push([
-                    { v: "KDBANK", s: { font: { bold: true } } },
+                    { v: "UID/UIW", s: { font: { bold: true } } },
                     { v: ": "+ namaUPI }
                 ]);
                 rows.push([
-                    { v: "KDBANK", s: { font: { bold: true } } },
+                    { v: "BANK MIV", s: { font: { bold: true } } },
                     { v: ": " + vkd_bank + (namaBank ? " - " + namaBank : '') }
                 ]);
                 rows.push([
-                    { v: "Tanggal Download", s: { font: { bold: true } } },
+                    { v: "TANGGAL DOWNLOAD", s: { font: { bold: true } } },
                     { v: ": "+ timestamp}
                 ]); // Tetap satu sel
                 rows.push([]); // baris kosong biasa

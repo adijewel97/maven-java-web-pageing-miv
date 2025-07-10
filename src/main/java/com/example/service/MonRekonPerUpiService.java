@@ -157,4 +157,52 @@ public class MonRekonPerUpiService {
         return result;
     }
 
+    public Map<String, Object> getDataBank(String kdbank) throws SQLException {
+        Map<String, Object> result = new HashMap<>();
+
+        try (
+            Connection conn = dataSource.getConnection();
+            CallableStatement stmt = conn.prepareCall("{call OPHARTDE.VER_MON_LAP.GET_combo_BANK_MIV(?, ?, ?)}")
+        ) {
+            stmt.setString(1, kdbank);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.registerOutParameter(3, Types.VARCHAR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+                if (rs.next()) {
+                    result.put("KODE_ERP", rs.getString("KODE_ERP"));
+                    result.put("KODE_BANK", rs.getString("KODE_BANK"));
+                    result.put("NAMA_BANK", rs.getString("NAMA_BANK"));
+                    result.put("STATUS", rs.getString("STATUS"));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public Map<String, Object> getDataUnitUPI(String kd_dist) throws SQLException {
+        Map<String, Object> result = new HashMap<>();
+
+        try (
+            Connection conn = dataSource.getConnection();
+            CallableStatement stmt = conn.prepareCall("{call OPHARTDE.VER_MON_LAP.GET_combo_UNITUPI(?, ?, ?)}")
+        ) {
+            stmt.setString(1, kd_dist);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.registerOutParameter(3, Types.VARCHAR);
+            stmt.execute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(2)) {
+                if (rs.next()) {
+                    result.put("KD_DIST", rs.getString("KD_DIST"));
+                    result.put("NAMA_DIST", rs.getString("NAMA_DIST"));
+                }
+            }
+        }
+
+        return result;
+    }
+
 }

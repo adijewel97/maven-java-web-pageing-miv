@@ -1,5 +1,5 @@
-com\example\service\MonRekonPerUpiService.class
 com\example\controller\MonRekonPerUpiController.class
 com\example\service\DbService.class
 com\example\utils\LoggerUtil.class
 com\example\utils\LoggerUtil$1.class
+com\example\service\MonRekonPerUpiService.class

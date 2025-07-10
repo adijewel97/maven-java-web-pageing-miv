@@ -6,7 +6,7 @@
       <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-      <a href="index.jsp?page=/views/dashboard/dashboard.jsp&menu=dashboard" class="nav-link">Dashboard</a>
+      <a href="index.jsp?page=/views/dashboard/dashboard.jsp&menu=dashboard" class="nav-link"><h5 id="pageTitle">Dashboard</h5></a>
     </li>
   </ul>
 

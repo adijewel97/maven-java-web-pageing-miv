@@ -46,10 +46,19 @@ public class MonRekonPerUpiController extends HttpServlet {
             return;
         }
 
-        // Default handler jika `act` tidak dikenali atau null
+        if ("getNamaBank".equalsIgnoreCase(act)) {
+            handleGetNamaBank(req, resp);
+            return;
+        }
+
+        if ("getNamaUnitUPI".equalsIgnoreCase(act)) {
+            handleGetNamaUnitUPI(req, resp);
+            return;
+        }
+
+        // Default
         prosesMonPerUpi(req, resp);
     }
-
 
     private void prosesMonPerUpi(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String vbln_usulan = req.getParameter("vbln_usulan");
@@ -168,6 +177,49 @@ public class MonRekonPerUpiController extends HttpServlet {
         }
     }
 
+    private void handleGetNamaBank(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String kdbank = req.getParameter("kdbank");
+        Map<String, Object> result = new HashMap<>();
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        try (PrintWriter out = resp.getWriter()) {
+            Map<String, Object> UnitUPIData = service.getDataBank(kdbank); // Panggil ke service
+            result.put("status", "success");
+            result.put("data", UnitUPIData);
+            out.print(gson.toJson(result));
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Gagal ambil nama bank", e);
+            result.put("status", "error");
+            result.put("message", "Gagal mengambil data bank");
+            try (PrintWriter out = resp.getWriter()) {
+                out.print(gson.toJson(result));
+            }
+        }
+    }
+
+    private void handleGetNamaUnitUPI(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String kd_dist = req.getParameter("kd_dist");
+        Map<String, Object> result = new HashMap<>();
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        try (PrintWriter out = resp.getWriter()) {
+            Map<String, Object> UnitUPIData = service.getDataUnitUPI(kd_dist); // Panggil ke service
+            result.put("status", "success");
+            result.put("data", UnitUPIData);
+            out.print(gson.toJson(result));
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Gagal ambil nama bank", e);
+            result.put("status", "error");
+            result.put("message", "Gagal mengambil data bank");
+            try (PrintWriter out = resp.getWriter()) {
+                out.print(gson.toJson(result));
+            }
+        }
+    }
        
     public static void main(String[] args) {
         try {

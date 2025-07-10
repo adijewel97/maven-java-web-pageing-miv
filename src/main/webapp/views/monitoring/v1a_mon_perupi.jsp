@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <style>
-   /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL DAFTAR */
+   /* CSS TABLE REKAP - SAMAKAN DENGAN TABEL Detail */
     #tablemon_upi {
         table-layout: auto; /* Sama seperti #dataModal table */
         font-size: 0.75rem; /* Sama dengan modal-body */
@@ -29,7 +29,7 @@
         overflow-y: auto;
     }
 
-    /* CSS MODAL SHOW TABLE MONITORING DAFTAR */
+    /* CSS MODAL SHOW TABLE MONITORING Detail */
     #dataModal .modal-body {
         font-size: 0.75rem; /* Ukuran teks diperkecil */
     }
@@ -242,8 +242,11 @@
         <div class="mt-4">
            <!-- Tombol export buatan sendiri -->
             <div class="mb-2">
-                <button id="btnExportMonRkpAllExcel" class="btn btn-success btn-export">
+                <button id="btnExportMonRkpAllExcel" class="btn btn-success btn-export" style="display: none;">
                     <i class="fa fa-file-excel-o"></i> Download Excel
+                </button>
+                <button id="btnExportMonRkpAllExcel2" class="btn btn-success btn-export" >
+                    <i class="fa fa-file-excel-o"></i> Download Excel Rekap
                 </button>
             </div>
 
@@ -322,7 +325,7 @@
         }
 
         // ---------------------------------------------------------------------------------------------
-        // 1A) Tampilkan monitoring Rekap
+        // 1A-1) Tampilkan monitoring Rekap
         // ---------------------------------------------------------------------------------------------
         var table = $('#tablemon_upi').DataTable({
             processing: false,
@@ -478,61 +481,47 @@
             // dom: 'lfrtip'
             dom: 'Bfrtip',
             buttons: [
-                {
-                    extend: 'excelHtml5',
-                    title: 'MIV_REKAP_' + convertBulanTahunToYYYYMM($('#bln_usulan').val()),
-                    className: 'd-none', // tombol disembunyikan
-                    customize: function (xlsx) {
-                        const sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        const sheetData = $('sheetData', sheet);
+                    {
+                        extend: 'excelHtml5',
+                        title: 'MIV_REKON_REKAP_' + convertBulanTahunToYYYYMM($('#bln_usulan').val()),
+                        className: 'd-none',
+                        exportOptions: {
+                            format: {
+                                body: function (data, row, column, node) {
+                                    // Ambil semua kolom yang menggunakan formatNumber
+                                    const columnsRaw = [5,6,7,8,9,10,11]; // indeks kolom sesuai urutan kolom PLN_IDPEL - SELISIH_RPTAG
 
-                        // Buat timestamp dan judul
-                        const now = new Date();
-                        const dd = String(now.getDate()).padStart(2, '0');
-                        const mm = String(now.getMonth() + 1).padStart(2, '0');
-                        const yyyy = now.getFullYear();
-                        const hh = String(now.getHours()).padStart(2, '0');
-                        const mi = String(now.getMinutes()).padStart(2, '0');
-                        const ss = String(now.getSeconds()).padStart(2, '0');
-                        const timestamp = "Tanggal Download: "+dd+"/"+mm+"/"+yyyy+" "+hh+":"+mi+":"+ss;
-                        const judul = "MIV_REKAP_" + convertBulanTahunToYYYYMM($('#bln_usulan').val());
+                                    // Jika kolom termasuk dalam Detail, hilangkan format ribuan (misal: "1.000.000" jadi "1000000")
+                                    if (columnsRaw.includes(column)) {
+                                        if (typeof data === 'string') {
+                                            // Hilangkan titik ribuan dan koma desimal jika perlu
+                                            return data.replace(/\./g, '').replace(/,/g, '');
+                                        }
+                                        return data;
+                                    }
+                                    return data;
+                                }
+                            }
+                        },
+                        customize: function (xlsx) {
+                            const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            const sheetData = $('sheetData', sheet);
 
-                        // Geser semua baris ke bawah 2
-                        // $('row', sheetData).each(function () {
-                        //     const r = parseInt($(this).attr('r'));
-                        //     const newR = r + 2;
-                        //     $(this).attr('r', newR);
-                        //     $(this).find('c').each(function () {
-                        //         const cellRef = $(this).attr('r');
-                        //         if (cellRef) {
-                        //             const col = cellRef.replace(/[0-9]/g, '');
-                        //             $(this).attr('r', col + newR);
-                        //         }
-                        //     });
-                        // });
+                            const now = new Date();
+                            const dd = String(now.getDate()).padStart(2, '0');
+                            const mm = String(now.getMonth() + 1).padStart(2, '0');
+                            const yyyy = now.getFullYear();
+                            const hh = String(now.getHours()).padStart(2, '0');
+                            const mi = String(now.getMinutes()).padStart(2, '0');
+                            const ss = String(now.getSeconds()).padStart(2, '0');
+                            const timestamp = dd+"/"+mm+"/"+yyyy+" "+hh+":"+mi+":"+ss;
+                            const judul = "MIV_REKAP_" + convertBulanTahunToYYYYMM($('#bln_usulan').val());
 
-                        // // Tambahkan baris A1 dan A2 (tanpa merge)
-                        // const row1 = `
-                        //     <row r="1">
-                        //         <c t="inlineStr" r="A1">
-                        //             <is><t>${judul}</t></is>
-                        //         </c>
-                        //     </row>
-                        // `;
-                        // const row2 = `
-                        //     <row r="2">
-                        //         <c t="inlineStr" r="A2">
-                        //             <is><t>${timestamp}</t></is>
-                        //         </c>
-                        //     </row>
-                        // `;
-
-                        // // Sisipkan ke atas
-                        // sheetData.prepend(row2);
-                        // sheetData.prepend(row1);
+                            // Tambahkan judul dan timestamp jika dibutuhkan
+                            // ...
+                        }
                     }
-                }
-            ]                
+                ]            
         });
 
         // Tampilkan spinnerOverlay saat DataTables mulai load data
@@ -554,15 +543,156 @@
             $('#spinnerOverlay').show();   // hanya tampilkan overlay modal
             table.ajax.reload();
         });
-
-        // Ekspor halaman Monitoring Rekap ke Excel
+         
+        // ---------------------------------------------------------------------------------------------
+        // 1A-2) Ekspor halaman Monitoring Rekap ke Excel
+        // ---------------------------------------------------------------------------------------------
         $('#btnExportMonRkpAllExcel').on('click', function () {
             table.button('.buttons-excel').trigger();
         });
 
+        $('#btnExportMonRkpAllExcel2').on('click', async function () {
+            const btn = $(this);
+            let totalLoaded = 0;
+
+            $('#spinnerOverlay').show();
+            await new Promise(resolve => setTimeout(resolve, 30));
+
+            btn.prop('disabled', true).text("Memuat... (" + formatRibuan(totalLoaded) + " data)");
+
+            const vbln_usulan = convertBulanTahunToYYYYMM($('#bln_usulan').val());
+            // const vbln_usulan = detailFilterParams.vbln_usulan;
+
+            if (!vbln_usulan) {
+                alert('Silakan lengkapi Bulan Usulan terlebih dahulu!');
+                btn.prop('disabled', false).text('Export Excel Rekap');
+                return;
+            }
+
+            try {
+                const pageSize = 1000;
+                let start = 0;
+                let allData = [];
+                let drawCounter = 1;
+
+                const headers = {
+                    // NO: '',
+                    KD_DIST: '',
+                    NAMA_DIST: '',
+                    // URUT: '',
+                    PRODUK: '',
+                    BANK: '',
+                    BLN_USULAN: '',
+                    PLN_IDPEL: '',
+                    PLN_RPTAG: '',
+                    PLN_LEBAR_LUNAS: '',
+                    PLN_RPTAG_LUNAS: '',
+                    BANK_IDPEL: '',
+                    BANK_RPTAG: '',
+                    SELISIH_RPTAG: ''
+                };
+
+                while (true) {
+                    const params = new URLSearchParams();
+                    params.append('vbln_usulan', vbln_usulan);
+
+                    const response = await fetch(getContextPath() + '/mon-rekon-bankvsperupi', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: params.toString()
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error('Status: ' + response.status + '\n' + errorText);
+                    }
+
+                    const json = await response.json();
+                    const data = json.data;
+                    if (!data || data.length === 0) break;
+
+                    const formatted = data.map((item, index) => {
+                        const row = { NO: start + index + 1 };
+                        Object.keys(headers).forEach(key => {
+                            row[key] = item[key] || '';
+                        });
+                        return row;
+                    });
+
+                    allData = allData.concat(formatted);
+                    totalLoaded += data.length;
+                    btn.text("Memuat... (" + formatRibuan(totalLoaded) + " data)");
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                    if (data.length < pageSize) break;
+
+                    start += pageSize;
+                }
+
+                if (allData.length === 0) {
+                    alert('Tidak ada data untuk diekspor!');
+                    return;
+                }
+
+                // Buat timestamp dan judul
+                const now = new Date();
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yyyy = now.getFullYear();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mi = String(now.getMinutes()).padStart(2, '0');
+                const ss = String(now.getSeconds()).padStart(2, '0');
+                const timestamp = dd + "/" + mm + "/" + yyyy + " " + hh + ":" + mi + ":" + ss;
+                const judul1 = "MIV REKON REKAP";
+
+                // Susun data untuk Excel
+                const rows = [];
+                // Tambah baris judul dengan format bold
+                rows.push([{ v: judul1, s: { font: { bold: true } } }]); // Tetap satu sel di A1
+                rows.push([
+                    { v: "BULAN", s: { font: { bold: true } } },
+                    { v: ": "+ vbln_usulan.substring(4, 6) + '/' + vbln_usulan.substring(0, 4)  }
+                ]);
+                rows.push([
+                    { v: "TANGGAL DOWNLOAD", s: { font: { bold: true } } },
+                    { v: ": "+ timestamp}
+                ]); // Tetap satu sel
+                rows.push([]); // baris kosong biasa
+                rows.push(['NO', ...Object.keys(headers)]); // header kolom biasa
+
+                allData.forEach(row => {
+                    const dataRow = ["" + row.NO]; // NO sebagai string
+                    Object.keys(headers).forEach(key => {
+                        dataRow.push(row[key] || '');
+                    });
+                    rows.push(dataRow);
+                });
+
+                // Buat worksheet dan workbook
+                const ws = XLSX.utils.aoa_to_sheet(rows);
+
+                // Merge A1 sampai kolom akhir (A1-Z1 misal)
+                // ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: Object.keys(headers).length } }];
+
+                // Lebar kolom
+                ws['!cols'] = Array(Object.keys(headers).length + 1).fill({ wch: 20 });
+
+                // Simpan file
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'REKAP_REKON_PLNvsBANK');
+                const filename = "MIV_REKON_REKAP_" + vbln_usulan + ".xlsx";
+                XLSX.writeFile(wb, filename);
+
+            } catch (err) {
+                alert('Terjadi error: ' + err.message);
+                console.error(err);
+            } finally {
+                btn.prop('disabled', false).text('Export Excel Rekap');
+                $('#spinnerOverlay').hide();
+            }
+        });
 
         // ---------------------------------------------------------------------------------------------
-        // 1B) show Data Monitoring Detail/Daftar PerUpi Modal Large 
+        // 1B-1) show Data Monitoring Detail/Detail PerUpi Modal Large 
         // ---------------------------------------------------------------------------------------------
         let lastPageBeforeSearchDetail = 0;
 
@@ -665,10 +795,50 @@
         });
        
         // ----------------------------------------------------------------------------
-        // 1C Export ke exel semua data MON daftar
+        // 1B-2) Export ke exel semua data MON Detail
         // ----------------------------------------------------------------------------
         // Fungsi format angka ribuan (lokal Indonesia)
         const formatRibuan = (angka) => new Intl.NumberFormat('id-ID').format(angka);
+
+        // Ambil nama Bank MIV dari DB
+        async function fetchNamaBank(kodeBank) {
+            const params = new URLSearchParams();
+            params.append('act', 'getNamaBank');
+            params.append('kdbank', kodeBank);
+
+            const response = await fetch(getContextPath() + '/mon-rekon-bankvsperupi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            });
+
+            if (!response.ok) throw new Error("Gagal mengambil data bank");
+
+            const json = await response.json();
+            if (json.status !== 'success') throw new Error("Data bank tidak ditemukan");
+
+            return json.data.NAMA_BANK || '';
+        }
+
+        // Ambil nama UID/UIW PLN MIV dari DB
+        async function fetchNamaUnitUPI(kd_dist) {
+            const params = new URLSearchParams();
+            params.append('act', 'getNamaUnitUPI');
+            params.append('kd_dist', kd_dist);
+
+            const response = await fetch(getContextPath() + '/mon-rekon-bankvsperupi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            });
+
+            if (!response.ok) throw new Error("Gagal mengambil data UNITUPI");
+
+            const json = await response.json();
+            if (json.status !== 'success') throw new Error("Data UNITUPI tidak ditemukan");
+
+            return json.data.NAMA_DIST || '';
+        }
 
         $('#btnExportMonDftAllExcelOneSheet').on('click', async function () {
             const btn = $(this);
@@ -689,7 +859,15 @@
                 return;
             }
 
+            let namaBank = '';
+            let namaUPI  = '';
             try {
+                namaBank = await fetchNamaBank(vkd_bank);
+                if (vkd_dist === '00') {
+                     namaUPI  = '00 - SAKTI'
+                } else {
+                    namaUPI  = await fetchNamaUnitUPI(vkd_dist);
+                }
                 const pageSize = 1000;
                 let start = 0;
                 let allData = [];
@@ -764,16 +942,28 @@
                 const hh = String(now.getHours()).padStart(2, '0');
                 const mi = String(now.getMinutes()).padStart(2, '0');
                 const ss = String(now.getSeconds()).padStart(2, '0');
-                const timestamp = "Tanggal Download: " + dd + "/" + mm + "/" + yyyy + " " + hh + ":" + mi + ":" + ss;
-                const judul1 = "MIV REKON DAFTAR";
-                const judul2 = "BULAN: " +  vbln_usulan + " - KDBANK: " + vkd_bank + " - KDDIST: " + vkd_dist;
+                const timestamp = dd + "/" + mm + "/" + yyyy + " " + hh + ":" + mi + ":" + ss;
+                const judul1 = "MIV REKON DETAIL";
 
                 // Susun data untuk Excel
                 const rows = [];
-                // Tambah baris judul dengan format bold
-                rows.push([{ v: judul1, s: { font: { bold: true } } }]);
-                rows.push([{ v: judul2, s: { font: { bold: true } } }]);
-                rows.push([{ v: timestamp, s: { font: { bold: true } } }]);
+                rows.push([{ v: judul1, s: { font: { bold: true } } }]); // Tetap satu sel di A1
+                rows.push([
+                    { v: "BULAN", s: { font: { bold: true } } },
+                    { v: ": "+ vbln_usulan.substring(4, 6) + '/' + vbln_usulan.substring(0, 4)  }
+                ]);
+                rows.push([
+                    { v: "KDBANK", s: { font: { bold: true } } },
+                    { v: ": "+ namaUPI }
+                ]);
+                rows.push([
+                    { v: "KDBANK", s: { font: { bold: true } } },
+                    { v: ": " + vkd_bank + (namaBank ? " - " + namaBank : '') }
+                ]);
+                rows.push([
+                    { v: "Tanggal Download", s: { font: { bold: true } } },
+                    { v: ": "+ timestamp}
+                ]); // Tetap satu sel
                 rows.push([]); // baris kosong biasa
                 rows.push(['NO', ...Object.keys(headers)]); // header kolom biasa
 
@@ -789,7 +979,7 @@
                 const ws = XLSX.utils.aoa_to_sheet(rows);
 
                 // Merge A1 sampai kolom akhir (A1-Z1 misal)
-                ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: Object.keys(headers).length } }];
+                // ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: Object.keys(headers).length } }];
 
                 // Lebar kolom
                 ws['!cols'] = Array(Object.keys(headers).length + 1).fill({ wch: 20 });
@@ -797,11 +987,12 @@
                 // Simpan file
                 const wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, 'REKON_PLNvsBANK');
-                const filename = "MIV_REKON_DAFTAR_" + vbln_usulan + "_" + vkd_bank + "_" + vkd_dist + ".xlsx";
+                const filename = "MIV_REKON_DETAIL_" + vbln_usulan + "_" + vkd_bank + "_" + vkd_dist + ".xlsx";
                 XLSX.writeFile(wb, filename);
 
             } catch (err) {
                 alert('Terjadi error: ' + err.message);
+                namaBank = '';
                 console.error(err);
             } finally {
                 btn.prop('disabled', false).text('Export Excel Per-UID/UIW');

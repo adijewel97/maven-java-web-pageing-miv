@@ -221,7 +221,7 @@
                     <div class="col-md-4 col-lg-3">
                         <label for="bln_usulan" class="form-label">Bulan Laporan :</label>
                         <div class="input-group">
-                            <input type="text" id="bln_usulan" class="form-control" placeholder="Pilih Bulan Laporan">
+                            <input type="text" id="bln_usulan" class="form-control" placeholder="Pilih Bulan Laporan" readonly>
                             <span class="input-group-text" id="calendarIcon" style="cursor: pointer;">
                                 <i class="fa-solid fa-calendar-alt"></i>
                             </span>
@@ -285,24 +285,45 @@
         }
 
         function convertBulanTahunToYYYYMM(str) {
-            const date = new Date(str); // "July 2025" akan dikenali oleh Date
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
-            return year+month; // hasil: "202507"
+            const bulanMap = {
+                'januari': '01',
+                'februari': '02',
+                'maret': '03',
+                'april': '04',
+                'mei': '05',
+                'juni': '06',
+                'juli': '07',
+                'agustus': '08',
+                'september': '09',
+                'oktober': '10',
+                'november': '11',
+                'desember': '12'
+            };
+
+            const parts = str.toLowerCase().split(' '); // pisah 'Agustus 2025' -> ['agustus', '2025']
+            const bulan = bulanMap[parts[0]];
+            const tahun = parts[1];
+
+            if (!bulan || !tahun) {
+                console.warn('Format Bulan-Tahun tidak valid:', str);
+                return ''; // fallback aman
+            }
+
+            return tahun + bulan; // contoh: 202508
         }
 
         // Inisialisasi flatpickr dengan locale Indonesia
         const blnUsulanInstance = flatpickr("#bln_usulan", {
-            locale: flatpickr.l10ns.id, // ✅ Ini cara yang benar
+            locale: flatpickr.l10ns.id,
             plugins: [
                 new monthSelectPlugin({
                     shorthand: false,
                     theme: "light"
                 })
             ],
-            dateFormat: "Ym",
+            dateFormat: "Y-m",       // untuk backend
             altInput: true,
-            altFormat: "F Y",
+            altFormat: "F Y",        // untuk user
             defaultDate: new Date()
         });
 
@@ -610,9 +631,14 @@
                     const json = await response.json();
                     const data = json.data;
                     if (!data || data.length === 0) break;
-
+                    
                     const formatted = data.map((item, index) => {
-                        const row = { NO: start + index + 1 };
+                        const row = {};
+                        if (item.URUT != 5) {
+                            row.NO = start + index + 1;
+                        } else {
+                            row.NO = ''; // Kosongkan untuk total
+                        }
                         Object.keys(headers).forEach(key => {
                             row[key] = item[key] || '';
                         });

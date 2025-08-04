@@ -1,8 +1,0 @@
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:27:16 +0700] "GET / HTTP/1.1" 200 9598 http-bio-8080-exec-1 929
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:27:18 +0700] "GET /index.jsp?page=/views/monitoring/v1a_mon_perupi.jsp&menu=monitoring-rekon-bank-upi HTTP/1.1" 200 51715 http-bio-8080-exec-2 249
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:27:56 +0700] "POST /mon-rekon-bankvsperupi HTTP/1.1" 200 4660 http-bio-8080-exec-3 36098
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:27:56 +0700] "POST /mon-rekon-bankvsperupi HTTP/1.1" 200 4660 http-bio-8080-exec-4 37265
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:28:20 +0700] "POST /mon-rekon-bankvsperupi HTTP/1.1" 200 8089 http-bio-8080-exec-6 2924
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:28:21 +0700] "POST /mon-rekon-bankvsperupi HTTP/1.1" 200 116 http-bio-8080-exec-7 66
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:28:21 +0700] "POST /mon-rekon-bankvsperupi HTTP/1.1" 200 73 http-bio-8080-exec-8 50
-0:0:0:0:0:0:0:1 - - [10/Jul/2025:13:28:24 +0700] "POST /mon-rekon-bankvsperupi HTTP/1.1" 200 34025 http-bio-8080-exec-9 3246

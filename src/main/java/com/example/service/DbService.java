@@ -24,7 +24,6 @@ public class DbService {
             if (input == null) {
                 throw new Exception("File db.properties tidak ditemukan di classpath.");
             }
-
             props.load(input);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Gagal membaca file db.properties", e);
@@ -35,6 +34,26 @@ public class DbService {
         ods.setURL(props.getProperty("db.url"));
         ods.setUser(props.getProperty("db.user"));
         ods.setPassword(props.getProperty("db.password"));
+
+        // ====== OPTIMASI KONEKSI ======
+        Properties connProps = new Properties();
+
+        // Matikan Fast Connection Failover / ONS
+        connProps.setProperty("oracle.jdbc.fanEnabled", "false");
+
+        // Timeout koneksi & baca
+        connProps.setProperty("oracle.net.CONNECT_TIMEOUT", "10000"); // 10 detik konek
+        connProps.setProperty("oracle.net.READ_TIMEOUT", "30000");    // 30 detik baca
+
+        // Validasi koneksi (jaga idle connection tetap sehat)
+        connProps.setProperty("oracle.jdbc.ReadTimeout", "30000");
+
+        ods.setConnectionProperties(connProps);
+
+        // ====== ENABLE CONNECTION POOLING BAWAAN ORACLE ======
+        ods.setImplicitCachingEnabled(true);
+        ods.setFastConnectionFailoverEnabled(false); // pastikan ONS tidak dicoba lagi
+
         return ods;
     }
 

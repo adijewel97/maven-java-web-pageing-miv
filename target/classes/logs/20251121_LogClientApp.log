@@ -1,0 +1,46 @@
+2025-11-21 06:26:03.578 - INFO: vbln_usulan: 202511
+2025-11-21 06:26:18.191 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:27:46.917 - INFO: vbln_usulan: 202511
+2025-11-21 06:27:48.343 - INFO: vbln_usulan: 202511
+2025-11-21 06:27:49.966 - INFO: vbln_usulan: 202511
+2025-11-21 06:27:53.405 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:27:55.272 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:27:56.055 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:28:42.130 - INFO: vbln_usulan: 202511
+2025-11-21 06:28:43.441 - INFO: vbln_usulan: 202511
+2025-11-21 06:28:49.323 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:28:49.503 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:28:52.778 - INFO: draw = 1
+2025-11-21 06:28:52.778 - INFO: offset (startIndex) = 0
+2025-11-21 06:28:52.778 - INFO: limit (length) = 10
+2025-11-21 06:28:52.778 - INFO: sortBy = KD_DIST ASC
+2025-11-21 06:28:52.778 - INFO: searchValue = 
+2025-11-21 06:28:52.778 - INFO: vbln_usulan = 202511
+2025-11-21 06:28:52.778 - INFO: vkd_bank = 111
+2025-11-21 06:28:52.778 - INFO: vkd_dist = 00
+2025-11-21 06:29:50.112 - INFO: vbln_usulan: 202511
+2025-11-21 06:29:56.027 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:35:08.225 - INFO: vbln_usulan: 202511
+2025-11-21 06:35:09.123 - INFO: vbln_usulan: 202511
+2025-11-21 06:35:17.922 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:35:17.975 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:35:21.017 - INFO: draw = 1
+2025-11-21 06:35:21.017 - INFO: offset (startIndex) = 0
+2025-11-21 06:35:21.017 - INFO: limit (length) = 10
+2025-11-21 06:35:21.019 - INFO: sortBy = KD_DIST ASC
+2025-11-21 06:35:21.019 - INFO: searchValue = 
+2025-11-21 06:35:21.019 - INFO: vbln_usulan = 202511
+2025-11-21 06:35:21.019 - INFO: vkd_bank = 111
+2025-11-21 06:35:21.019 - INFO: vkd_dist = 00
+2025-11-21 06:52:45.448 - INFO: vbln_usulan: 202511
+2025-11-21 06:52:47.105 - INFO: vbln_usulan: 202511
+2025-11-21 06:52:55.562 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:52:55.664 - INFO: Jumlah data dikembalikan: 24
+2025-11-21 06:52:59.679 - INFO: draw = 1
+2025-11-21 06:52:59.680 - INFO: offset (startIndex) = 0
+2025-11-21 06:52:59.680 - INFO: limit (length) = 10
+2025-11-21 06:52:59.680 - INFO: sortBy = KD_DIST ASC
+2025-11-21 06:52:59.680 - INFO: searchValue = 
+2025-11-21 06:52:59.680 - INFO: vbln_usulan = 202511
+2025-11-21 06:52:59.680 - INFO: vkd_bank = 111
+2025-11-21 06:52:59.681 - INFO: vkd_dist = 00

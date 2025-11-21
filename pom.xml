@@ -78,7 +78,8 @@
     </dependencies>
 
     <build>
-        <finalName>maven-java-web-pageing</finalName>
+        <!-- <finalName>maven-java-web-pageing</finalName> -->
+        <finalName>miv-p2apst</finalName>
         <plugins>
             <!-- Plugin Compiler yang benar untuk Java 8 -->
             <plugin>
@@ -92,13 +93,38 @@
             </plugin>
 
             <!-- Plugin Tomcat 7 (opsional) -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
                     <path>/</path>
                     <port>8080</port>
+                </configuration>
+            </plugin> -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <server>TomcatServer</server>
+
+                    <!-- ===== UBAH PATH DI SINI ===== -->
+                    <!-- <path>/maven-java-web-pageing</path> -->
+                    <path>/miv-p2apst</path>
+                    <!-- ============================== -->
+
+                    <username>admin</username>
+                    <password>admin123</password>
+
+                    <!-- Pastikan WAR yang dideploy benar -->
+                    <warFile>${project.build.directory}/${project.build.finalName}.war</warFile>
+
+                    <!-- Biar tidak error socket write -->
+                    <update>true</update>
+                    <connectTimeout>30000</connectTimeout>
+                    <readTimeout>60000</readTimeout>
                 </configuration>
             </plugin>
         </plugins>

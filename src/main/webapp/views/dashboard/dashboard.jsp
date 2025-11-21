@@ -7,15 +7,4 @@
       </div>
     </div>
   </div>
-
-  <!-- Konten lainnya -->
-  <!-- <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="text-primary">Dashboard</h5>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </div>

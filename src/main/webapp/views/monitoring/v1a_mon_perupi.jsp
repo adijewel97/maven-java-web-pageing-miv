@@ -23,6 +23,12 @@
         display: none !important;
     }
 
+    /* Target wrapper DataTables untuk memastikan lebar 100% tidak terlampaui */
+    #tablemon_upi_wrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+
     /* Tambahan jika mau batas tinggi + scroll seperti modal */
     #tablemon_upi_wrapper .dataTables_scrollBody {
         max-height: 65vh;       /* Sesuaikan tinggi maksimal seperti modal */
@@ -439,17 +445,17 @@
            columnDefs: [
                 { targets: '_all', className: 'dt-center' },
                 { targets: 0, className: 'dt-body-right', orderable: false, width: '30px' },       // No
-                { targets: 1, className: 'dt-body-left', width: '250px' },                         // KD_DIST - NAMA_DIST
+                { targets: 1, className: 'dt-body-left', width: '100px' },                         // KD_DIST - NAMA_DIST
                 { targets: 2, className: 'dt-body-center', width: '80px' },                       // PRODUK
-                { targets: 3, className: 'dt-body-left', width: '200px' },                         // BANK
+                { targets: 3, className: 'dt-body-left', width: '100px' },                         // BANK
                 { targets: 4, className: 'dt-body-center', width: '70px' },                        // BULAN
                 { targets: 5, className: 'dt-body-right', width: '100px' },                        // PLN_IDPEL
                 { targets: 6, className: 'dt-body-right', width: '120px' },                        // PLN_RPTAG
                 { targets: 7, className: 'dt-body-right', width: '100px' },                        // PLN_LEBAR_LUNAS
                 { targets: 8, className: 'dt-body-right', width: '120px' },                        // PLN_RPTAG_LUNAS
                 { targets: 9, className: 'dt-body-right', width: '100px' },                        // BANK_IDPEL
-                { targets: 10, className: 'dt-body-right', width: '120px' },                       // BANK_RPTAG
-                { targets: 11, className: 'dt-body-right', width: '120px' }                        // SELISIH_RPTAG
+                { targets: 10, className: 'dt-body-right', width: '100px' },                       // BANK_RPTAG
+                { targets: 11, className: 'dt-body-right', width: '100px' }                        // SELISIH_RPTAG
             ],
             createdRow: function (row, data, dataIndex) {
                if (data.URUT == 5) {
